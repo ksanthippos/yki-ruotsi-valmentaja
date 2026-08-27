@@ -147,15 +147,27 @@ export default function App() {
         setResponse((current) => current ? `${current} ${transcript}` : transcript);
       }
     };
-    recognition.onerror = () => {
-      setSpeechError('Puheentunnistus ei onnistunut. Tarkista mikrofonilupa ja yritä uudelleen.');
+    recognition.onerror = (event) => {
+      const messages: Record<string, string> = {
+        'not-allowed': 'Mikrofonin käyttö on estetty. Salli mikrofonin käyttö selaimen asetuksista.',
+        'service-not-allowed': 'Tämä selain ei salli puheentunnistusta tässä PWA:ssa. Kokeile sivua Safarissa.',
+        network: 'Puheentunnistus tarvitsee verkkoyhteyden. Tarkista yhteys ja yritä uudelleen.',
+        'audio-capture': 'Mikrofonia ei löytynyt. Tarkista, että laitteessa on toimiva mikrofoni.',
+        'no-speech': 'Puhetta ei kuultu. Puhu hieman lähempänä mikrofonia ja yritä uudelleen.',
+      };
+      setSpeechError(messages[event.error ?? ''] ?? 'Puheentunnistus ei onnistunut. Kokeile uudelleen Safarissa.');
       setIsListening(false);
     };
     recognition.onend = () => setIsListening(false);
     recognitionRef.current = recognition;
     setSpeechError('');
     setIsListening(true);
-    recognition.start();
+    try {
+      recognition.start();
+    } catch {
+      setIsListening(false);
+      setSpeechError('Puheentunnistusta ei voitu käynnistää. Sulje toinen mahdollinen mikrofonia käyttävä toiminto ja yritä uudelleen.');
+    }
   }
 
   function checkChoice(choice: string, correctAnswer: string) {
