@@ -173,6 +173,6 @@ export const vocabulary: VocabularyItem[] = [
 ];
 
 export const vocabularySource = {
-    title: "Ylen YKI-materiaali",
+    title: "Ylen materiaali",
     url: "https://yle.fi/a/20-146198",
 };

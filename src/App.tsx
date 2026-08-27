@@ -16,6 +16,14 @@ function normalize(text: string) {
   return text.trim().toLocaleLowerCase('fi-FI');
 }
 
+function isToday(date: string) {
+  const value = new Date(date);
+  const now = new Date();
+  return value.getFullYear() === now.getFullYear()
+    && value.getMonth() === now.getMonth()
+    && value.getDate() === now.getDate();
+}
+
 type Section = 'home' | 'vocabulary' | 'listening' | 'reading' | 'writing' | 'speaking';
 
 const menuItems: { id: Section; label: string }[] = [
@@ -98,6 +106,10 @@ export default function App() {
   );
   const word = vocabulary[activeVocabularyOrder[wordIndex % activeVocabularyOrder.length]];
   const score = progress.score;
+  const todayPoints = progress.attempts
+    .filter((attempt) => attempt.correct && isToday(attempt.completedAt))
+    .reduce((total, attempt) => total + (attempt.area === 'speaking' || attempt.area === 'writing' ? 5 : 10), 0);
+  const dailyGoal = 50;
   const readiness = assessReadiness(progress, areaTotals);
 
   useEffect(() => {
@@ -342,8 +354,16 @@ export default function App() {
         <>
           <section className="card">
             <h2>Tämän päivän harjoittelu</h2>
-            <p>Valitse valikosta osa-alue ja harjoittele 15 minuuttia.</p>
-            <button onClick={() => selectSection('vocabulary')}>Aloita sanastosta</button>
+            <p>Valitse valikosta osa-alue ja harjoittele 15 minuuttia. Lisäharjoitteluun <a href={vocabularySource.url} target="_blank" rel="noreferrer">Ylen YKI-materiaalia</a></p>
+
+            <div className="daily-score" aria-label={`Tänään saadut pisteet: ${todayPoints}`}>
+              <div className="area-header">
+                <span>Tämän päivän pisteet</span>
+                <strong>{todayPoints} / {dailyGoal}</strong>
+              </div>
+              <progress value={Math.min(todayPoints, dailyGoal)} max={dailyGoal} />
+              <p className="hint">Tavoite: {dailyGoal} pistettä</p>
+            </div>
           </section>
           <section className="card practice-summary">
             <div className="area-header">
@@ -407,7 +427,6 @@ export default function App() {
           <input id="answer" value={answer} onChange={(event) => setAnswer(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') checkAnswer(); }} placeholder="Kirjoita vastaus" autoFocus />
           <div className="actions"><button onClick={checkAnswer}>Tarkista</button><button className="secondary" onClick={nextWord}>Seuraava</button></div>
           {feedback && <p><strong>{feedback}</strong></p>}
-          <p><a href={vocabularySource.url} target="_blank" rel="noreferrer">Avaa Ylen alkuperäinen materiaali</a></p>
           {renderDifficultyControl()}
         </section>
       );
@@ -505,11 +524,10 @@ export default function App() {
   return (
     <main className="app">
       <header>
-        <p className="eyebrow">YKI Ruotsi</p>
+        <p className="eyebrow"></p>
         <h1>YKI-valmentaja</h1>
-        <p>
-          Tavoitteesi: hyvä ruotsin kielen taito opetustyötä varten.
-        </p>
+        
+      
       </header>
       <nav className="menu" aria-label="Harjoitusosiot">
         {menuItems.map((item) => (
