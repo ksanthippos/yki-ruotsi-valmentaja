@@ -1,62 +1,80 @@
-export const vocabulary = [
+export type VocabularyItem = {
+    swedish: string;
+    finnish: string;
+    example: string;
+    category: string;
+};
+
+export const vocabulary: VocabularyItem[] = [
     {
-        word: "matematik",
-        translation: "mathematics",
-        context: "Käytetään matematiikan oppimisessa.",
-        example: "Matematik är viktigt för att förstå fysik."
+        swedish: "en ekvation",
+        finnish: "yhtälö",
+        example: "Lös ekvationen.",
+        category: "Matematiikka",
     },
     {
-        word: "fysik",
-        translation: "physics",
-        context: "Käytetään fysiikan oppimisessa.",
-        example: "Fysik handlar om naturens lagar."
+        swedish: "en hastighet",
+        finnish: "nopeus",
+        example: "Vad är föremålets hastighet?",
+        category: "Fysiikka",
     },
     {
-        word: "geometri",
-        translation: "geometry",
-        context: "Geometria on osa matematiikkaa.",
-        example: "Geometri är en del av matematik."
+        swedish: "att förklara",
+        finnish: "selittää",
+        example: "Kan du förklara uppgiften?",
+        category: "Opetuskieli",
     },
     {
-        word: "algebra",
-        translation: "algebra",
-        context: "Algebra on tärkeä osa matematiikkaa.",
-        example: "Algebra är viktigt för att lösa ekvationer."
+        swedish: "en mätning",
+        finnish: "mittaus",
+        example: "Vi gör en mätning i fysiken.",
+        category: "Fysiikka",
     },
     {
-        word: "kemi",
-        translation: "chemistry",
-        context: "Kemia liittyy fysiikkaan ja matematiikkaan.",
-        example: "Kemi är viktigt för att förstå materia."
+        swedish: "en formel",
+        finnish: "kaava",
+        example: "Vilken formel använder vi?",
+        category: "Matematiikka",
     },
     {
-        word: "laskentatoimi",
-        translation: "calculation",
-        context: "Laskentatoimi on tärkeä taito matematiikassa.",
-        example: "Laskentatoimi är en viktig färdighet i matematik."
+        swedish: "en kraft",
+        finnish: "voima",
+        example: "En kraft kan förändra ett föremåls rörelse.",
+        category: "Fysiikka",
     },
     {
-        word: "mittaus",
-        translation: "measurement",
-        context: "Mittaus on tärkeä fysiikassa.",
-        example: "Mätning är viktigt inom fysik."
+        swedish: "en massa",
+        finnish: "massa",
+        example: "Vi mäter föremålets massa.",
+        category: "Fysiikka",
     },
     {
-        word: "kaava",
-        translation: "formula",
-        context: "Kaavat ovat tärkeitä matematiikassa ja fysiikassa.",
-        example: "Formler är viktiga inom matematik och fysik."
+        swedish: "en vinkel",
+        finnish: "kulma",
+        example: "Mät vinkeln med en gradskiva.",
+        category: "Matematiikka",
     },
     {
-        word: "teoria",
-        translation: "theory",
-        context: "Teoria on tärkeä osa oppimista.",
-        example: "Teori är en viktig del av lärande."
+        swedish: "ett resultat",
+        finnish: "tulos",
+        example: "Skriv resultatet i tabellen.",
+        category: "Opetuskieli",
     },
     {
-        word: "harjoitus",
-        translation: "exercise",
-        context: "Harjoitukset auttavat oppimaan.",
-        example: "Övningar hjälper till att lära sig."
-    }
+        swedish: "en uppgift",
+        finnish: "tehtävä",
+        example: "Börja med den första uppgiften.",
+        category: "Opetuskieli",
+    },
+    {
+        swedish: "att jämföra",
+        finnish: "vertailla",
+        example: "Jämför era resultat med varandra.",
+        category: "Opetuskieli",
+    },
 ];
+
+export const vocabularySource = {
+    title: "Ylen ruotsin kielen materiaali",
+    url: "https://yle.fi/a/20-146803",
+};

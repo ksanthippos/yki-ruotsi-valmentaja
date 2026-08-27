@@ -26,6 +26,26 @@ body {
   text-transform: uppercase;
 }
 
+.menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 24px 0;
+}
+
+.menu-item {
+  padding: 9px 13px;
+  color: #356ae6;
+  background: #e8efff;
+  font-size: 0.9rem;
+}
+
+.menu-item.active,
+.menu-item.active:hover {
+  color: #fff;
+  background: #356ae6;
+}
+
 .card,
 .area {
   margin: 16px 0;
@@ -47,6 +67,61 @@ button {
 
 button:hover {
   background: #2455c7;
+}
+
+input,
+textarea {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid #cbd3e1;
+  border-radius: 10px;
+  font: inherit;
+}
+
+textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.actions,
+.option-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.option {
+  color: #172033;
+  background: #eef2f7;
+}
+
+.option:hover {
+  color: #fff;
+  background: #356ae6;
+}
+
+.secondary {
+  background: #64748b;
+}
+
+.next-button {
+  margin-left: 10px;
+}
+
+.reading-text {
+  padding: 16px;
+  color: #334155;
+  background: #f3f6fb;
+  border-left: 4px solid #356ae6;
+  line-height: 1.6;
+}
+
+.hint {
+  color: #64748b;
+  font-size: 0.9rem;
 }
 
 .area-header {
