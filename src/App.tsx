@@ -151,7 +151,7 @@ export default function App() {
       const messages: Record<string, string> = {
         'not-allowed': 'Mikrofonin käyttö on estetty. Salli mikrofonin käyttö selaimen asetuksista.',
         'service-not-allowed': 'Tämä selain ei salli puheentunnistusta tässä PWA:ssa. Kokeile sivua Safarissa.',
-        network: 'Puheentunnistus tarvitsee verkkoyhteyden. Tarkista yhteys ja yritä uudelleen.',
+        network: 'Selaimen puheentunnistuspalvelu ei ole käytettävissä tässä ympäristössä. Voit kirjoittaa vastauksen tekstikenttään.',
         'audio-capture': 'Mikrofonia ei löytynyt. Tarkista, että laitteessa on toimiva mikrofoni.',
         'no-speech': 'Puhetta ei kuultu. Puhu hieman lähempänä mikrofonia ja yritä uudelleen.',
       };
