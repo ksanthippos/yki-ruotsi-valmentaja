@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { vocabulary, vocabularySource } from './data/vocabulary';
 import {
   listeningExercises,
@@ -51,6 +51,10 @@ export default function App() {
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [showListeningText, setShowListeningText] = useState(false);
   const [showAttemptHistory, setShowAttemptHistory] = useState(false);
+  const [response, setResponse] = useState('');
+  const [isListening, setIsListening] = useState(false);
+  const [speechError, setSpeechError] = useState('');
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const [progress, setProgress] = useState<UserProgress>(() => {
     const stored = getUserProgress();
     if (stored) return stored;
@@ -110,11 +114,48 @@ export default function App() {
   }
 
   function selectSection(nextSection: Section) {
+    recognitionRef.current?.abort();
+    setIsListening(false);
     setSection(nextSection);
     setExerciseIndex(0);
     setAnswer('');
     setFeedback('');
     setShowListeningText(false);
+    setResponse('');
+    setSpeechError('');
+  }
+
+  function toggleSpeechRecognition() {
+    if (isListening) {
+      recognitionRef.current?.stop();
+      return;
+    }
+
+    const Recognition = window.SpeechRecognition ?? window.webkitSpeechRecognition;
+    if (!Recognition) {
+      setSpeechError('Tämä selain ei tue puheentunnistusta. Kirjoita vastauksesi tekstikenttään.');
+      return;
+    }
+
+    const recognition = new Recognition();
+    recognition.lang = 'sv-SE';
+    recognition.interimResults = false;
+    recognition.continuous = false;
+    recognition.onresult = (event) => {
+      const transcript = event.results[0]?.[0]?.transcript.trim();
+      if (transcript) {
+        setResponse((current) => current ? `${current} ${transcript}` : transcript);
+      }
+    };
+    recognition.onerror = () => {
+      setSpeechError('Puheentunnistus ei onnistunut. Tarkista mikrofonilupa ja yritä uudelleen.');
+      setIsListening(false);
+    };
+    recognition.onend = () => setIsListening(false);
+    recognitionRef.current = recognition;
+    setSpeechError('');
+    setIsListening(true);
+    recognition.start();
   }
 
   function checkChoice(choice: string, correctAnswer: string) {
@@ -295,7 +336,20 @@ export default function App() {
         <h2>{section === 'writing' ? 'Kirjoitustehtävä' : 'Puhumistehtävä'}</h2>
         <p>{prompts[exerciseIndex % prompts.length]}</p>
         <p className="difficulty">Vaikeustaso: {(section === 'writing' ? writingDifficulties : speakingDifficulties)[exerciseIndex % prompts.length] === 'easy' ? 'Perustaso' : (section === 'writing' ? writingDifficulties : speakingDifficulties)[exerciseIndex % prompts.length] === 'medium' ? 'Keskitaso' : 'Haastava'}</p>
-        <textarea placeholder={section === 'writing' ? 'Kirjoita vastauksesi ruotsiksi...' : 'Kirjoita ensin muistiinpanosi...'} />
+        <textarea
+          value={response}
+          onChange={(event) => setResponse(event.target.value)}
+          placeholder={section === 'writing' ? 'Kirjoita vastauksesi ruotsiksi...' : 'Kirjoita ensin muistiinpanosi...'}
+        />
+        {section === 'speaking' && (
+          <>
+            <button className={isListening ? 'recording' : 'secondary'} onClick={toggleSpeechRecognition}>
+              {isListening ? 'Lopeta kuuntelu' : '🎙️ Puhu ruotsiksi'}
+            </button>
+            <p className="hint">Selain muuttaa puheesi tekstiksi, jonka voit tarkistaa ja täydentää.</p>
+            {speechError && <p className="error" role="alert">{speechError}</p>}
+          </>
+        )}
         <p className="hint">Tavoittele selkeää rakennetta ja käytä mahdollisimman monipuolista sanastoa.</p>
         <button onClick={() => {
           completeExercise(section, String(exerciseIndex), 5);

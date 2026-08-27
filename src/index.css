@@ -107,6 +107,19 @@ textarea {
   background: #64748b;
 }
 
+.recording {
+  background: #c2415d;
+}
+
+.recording:hover {
+  background: #a8324b;
+}
+
+.error {
+  color: #b42318;
+  font-weight: 700;
+}
+
 .text-toggle {
   margin-left: 10px;
 }
