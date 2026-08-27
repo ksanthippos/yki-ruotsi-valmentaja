@@ -101,12 +101,38 @@ export const writingPrompts = [
 
 export const writingDifficulties = ['easy', 'medium', 'medium', 'medium', 'hard'] as const;
 
-export const speakingPrompts = [
-  'Förklara för en elev hur man löser en enkel ekvation.',
-  'Berätta om en fysiklektion som du skulle vilja hålla.',
-  'Beskriv hur du ger konstruktiv respons på en elevs svar.',
-  'Berätta hur du bokar en tid eller sköter ett annat vardagsärende.',
-  'Uttryck din åsikt om hur skolan kan stödja elevernas välmående.',
+export type SpeakingPrompt = {
+  id: number;
+  prompt: string;
+  keywords: string[];
+};
+
+export const speakingPrompts: SpeakingPrompt[] = [
+  {
+    id: 1,
+    prompt: 'Selitä ruotsiksi oppilaalle, miten yksinkertainen yhtälö ratkaistaan.',
+    keywords: ['ekvation', 'lösa'],
+  },
+  {
+    id: 2,
+    prompt: 'Kerro ruotsiksi fysiikan oppitunnista, jonka haluaisit pitää.',
+    keywords: ['fysiklektion', 'elever'],
+  },
+  {
+    id: 3,
+    prompt: 'Kuvaile ruotsiksi, miten annat rakentavaa palautetta oppilaan vastauksesta.',
+    keywords: ['respons', 'svar'],
+  },
+  {
+    id: 4,
+    prompt: 'Kerro ruotsiksi, miten varaat ajan tai hoidat muun arkisen asian.',
+    keywords: ['boka', 'tid'],
+  },
+  {
+    id: 5,
+    prompt: 'Ilmaise ruotsiksi mielipiteesi siitä, miten koulu voi tukea oppilaiden hyvinvointia.',
+    keywords: ['åsikt', 'skolan', 'välmående'],
+  },
 ];
 
 export const speakingDifficulties = ['medium', 'medium', 'hard', 'easy', 'hard'] as const;

@@ -213,6 +213,28 @@ export default function App() {
     setShowListeningText(false);
   }
 
+  function checkSpeakingResponse() {
+    if (feedback) return;
+    if (!response.trim()) {
+      setFeedback('Puhu ensin vastaus tai kirjoita se tekstikenttään.');
+      return;
+    }
+
+    const task = speakingPrompts[exerciseIndex % speakingPrompts.length];
+    const normalizedResponse = normalize(response);
+    const missingKeywords = task.keywords.filter(
+      (keyword) => !normalizedResponse.includes(normalize(keyword)),
+    );
+
+    if (missingKeywords.length === 0) {
+      completeExercise('speaking', String(task.id), 5);
+      setFeedback('Hyvä! Vastauksessa ovat mukana tehtävän tärkeät käsitteet. +5 pistettä');
+    } else {
+      completeExercise('speaking', String(task.id));
+      setFeedback(`Hyvä alku. Yritä mainita vielä: ${missingKeywords.join(', ')}`);
+    }
+  }
+
   const listening = listeningExercises[exerciseIndex % listeningExercises.length];
   const reading = readingExercises[exerciseIndex % readingExercises.length];
 
@@ -355,11 +377,14 @@ export default function App() {
     }
 
     const prompts = section === 'writing' ? writingPrompts : speakingPrompts;
+    const prompt = section === 'writing'
+      ? writingPrompts[exerciseIndex % writingPrompts.length]
+      : speakingPrompts[exerciseIndex % speakingPrompts.length].prompt;
     return (
       <section className="card">
         <div className="area-header"><span>{section === 'writing' ? 'Kirjoittaminen' : 'Puhuminen'}</span><strong>Pisteet: {score}</strong></div>
         <h2>{section === 'writing' ? 'Kirjoitustehtävä' : 'Puhumistehtävä'}</h2>
-        <p>{prompts[exerciseIndex % prompts.length]}</p>
+        <p>{prompt}</p>
         <p className="difficulty">Vaikeustaso: {(section === 'writing' ? writingDifficulties : speakingDifficulties)[exerciseIndex % prompts.length] === 'easy' ? 'Perustaso' : (section === 'writing' ? writingDifficulties : speakingDifficulties)[exerciseIndex % prompts.length] === 'medium' ? 'Keskitaso' : 'Haastava'}</p>
         <textarea
           value={response}
@@ -377,9 +402,13 @@ export default function App() {
         )}
         <p className="hint">Tavoittele selkeää rakennetta ja käytä mahdollisimman monipuolista sanastoa.</p>
         <button onClick={() => {
-          completeExercise(section, String(exerciseIndex), 5);
-          setFeedback('Tehtävä merkitty harjoitelluksi!');
-        }}>Merkitse tehdyksi</button>
+          if (section === 'speaking') {
+            checkSpeakingResponse();
+          } else {
+            completeExercise('writing', String(exerciseIndex), 5);
+            setFeedback('Tehtävä merkitty harjoitelluksi!');
+          }
+        }}>{section === 'speaking' ? 'Tarkista puheenvuoro' : 'Merkitse tehdyksi'}</button>
         <button className="secondary next-button" onClick={() => nextExercise(prompts.length)}>Seuraava tehtävä</button>
         {feedback && <p><strong>{feedback}</strong></p>}
       </section>
