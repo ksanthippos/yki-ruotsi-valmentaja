@@ -20,6 +20,8 @@ export interface Exercise {
     difficulty: 'easy' | 'medium' | 'hard';
 }
 
+export type Difficulty = 'easy' | 'medium' | 'hard';
+
 export interface TeachingSubject {
     subjectName: string;
     terminology: string[];

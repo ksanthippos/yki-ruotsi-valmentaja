@@ -211,6 +211,53 @@ textarea {
   font-weight: 700;
 }
 
+.difficulty-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #d7e3de;
+}
+
+.difficulty-button {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.difficulty-button:disabled {
+  color: #94a3b8;
+  background: #e2e8f0;
+  cursor: not-allowed;
+}
+
+.difficulty-label {
+  min-width: 112px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 700;
+  text-align: center;
+}
+
+.difficulty-easy {
+  background: #238636;
+}
+
+.difficulty-medium {
+  color: #422006;
+  background: #eab308;
+}
+
+.difficulty-hard {
+  background: #c2413f;
+}
+
 .practice-summary ul {
   margin: 8px 0 0;
   padding-left: 20px;
