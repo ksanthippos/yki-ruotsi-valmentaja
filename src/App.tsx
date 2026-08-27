@@ -6,14 +6,8 @@ import {
   speakingPrompts,
   writingPrompts,
 } from './data/learningMaterials';
-
-const areas = [
-  { name: 'Sanasto', progress: 35 },
-  { name: 'Lukeminen', progress: 20 },
-  { name: 'Kuuntelu', progress: 15 },
-  { name: 'Kirjoittaminen', progress: 10 },
-  { name: 'Puhuminen', progress: 5 },
-];
+import { createEmptyProgress, getUserProgress, saveUserProgress } from './services/storage';
+import { ProgressArea, UserProgress } from './types';
 
 function normalize(text: string) {
   return text.trim().toLocaleLowerCase('fi-FI');
@@ -37,23 +31,44 @@ export default function App() {
   const [section, setSection] = useState<Section>('home');
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [showListeningText, setShowListeningText] = useState(false);
-  const [score, setScore] = useState(() =>
-    Number(localStorage.getItem('yki-score') ?? 0),
-  );
+  const [progress, setProgress] = useState<UserProgress>(() => {
+    const stored = getUserProgress();
+    if (stored) return stored;
+
+    const initial = createEmptyProgress();
+    const legacyScore = Number(localStorage.getItem('yki-score') ?? 0);
+    return { ...initial, score: Number.isFinite(legacyScore) ? legacyScore : 0 };
+  });
 
   const word = vocabulary[wordIndex];
+  const score = progress.score;
 
   useEffect(() => {
-    localStorage.setItem('yki-score', String(score));
-  }, [score]);
+    saveUserProgress(progress);
+    localStorage.setItem('yki-score', String(progress.score));
+  }, [progress]);
+
+  function completeExercise(area: ProgressArea, id: string, points = 0) {
+    setProgress((current) => {
+      const completed = current.completed[area];
+      const alreadyCompleted = completed.includes(id);
+      return {
+        score: current.score + (alreadyCompleted ? 0 : points),
+        completed: alreadyCompleted
+          ? current.completed
+          : { ...current.completed, [area]: [...completed, id] },
+      };
+    });
+  }
 
   function checkAnswer() {
     if (!answer.trim() || feedback) return;
 
     if (normalize(answer) === normalize(word.finnish)) {
       setFeedback('Oikein! +10 pistettä');
-      setScore((current) => current + 10);
+      completeExercise('vocabulary', String(wordIndex), 10);
     } else {
+      completeExercise('vocabulary', String(wordIndex));
       setFeedback(`Oikea vastaus on: ${word.finnish}`);
     }
   }
@@ -76,8 +91,13 @@ export default function App() {
     if (feedback) return;
     if (choice === correctAnswer) {
       setFeedback('Oikein! +10 pistettä');
-      setScore((current) => current + 10);
+      const area = section === 'listening' ? 'listening' : 'reading';
+      const exercise = area === 'listening' ? listening : reading;
+      completeExercise(area, String(exercise.id), 10);
     } else {
+      const area = section === 'listening' ? 'listening' : 'reading';
+      const exercise = area === 'listening' ? listening : reading;
+      completeExercise(area, String(exercise.id));
       setFeedback(`Oikea vastaus on: ${correctAnswer}`);
     }
   }
@@ -131,15 +151,26 @@ export default function App() {
           <section>
             <h2>Edistyminen</h2>
             <div className="areas">
-              {areas.map((area) => (
-                <div className="area" key={area.name}>
+              {[
+                ['Sanasto', 'vocabulary', vocabulary.length],
+                ['Lukeminen', 'reading', readingExercises.length],
+                ['Kuuntelu', 'listening', listeningExercises.length],
+                ['Kirjoittaminen', 'writing', writingPrompts.length],
+                ['Puhuminen', 'speaking', speakingPrompts.length],
+              ].map(([name, area, total]) => {
+                const progressValue = Math.round(
+                  (progress.completed[area as ProgressArea].length / Number(total)) * 100,
+                );
+                return (
+                <div className="area" key={String(area)}>
                   <div className="area-header">
-                    <span>{area.name}</span>
-                    <strong>{area.progress} %</strong>
+                    <span>{name}</span>
+                    <strong>{progressValue} %</strong>
                   </div>
-                  <progress value={area.progress} max="100" />
+                  <progress value={progressValue} max="100" />
                 </div>
-              ))}
+                );
+              })}
             </div>
           </section>
         </>
@@ -211,7 +242,10 @@ export default function App() {
         <p>{prompts[exerciseIndex % prompts.length]}</p>
         <textarea placeholder={section === 'writing' ? 'Kirjoita vastauksesi ruotsiksi...' : 'Kirjoita ensin muistiinpanosi...'} />
         <p className="hint">Tavoittele selkeää rakennetta ja käytä mahdollisimman monipuolista sanastoa.</p>
-        <button onClick={() => setFeedback('Tehtävä merkitty harjoitelluksi!')}>Merkitse tehdyksi</button>
+        <button onClick={() => {
+          completeExercise(section, String(exerciseIndex), 5);
+          setFeedback('Tehtävä merkitty harjoitelluksi!');
+        }}>Merkitse tehdyksi</button>
         <button className="secondary next-button" onClick={() => nextExercise(prompts.length)}>Seuraava tehtävä</button>
         {feedback && <p><strong>{feedback}</strong></p>}
       </section>

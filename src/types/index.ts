@@ -24,3 +24,10 @@ export interface TeachingSubject {
     subjectName: string;
     terminology: string[];
 }
+
+export type ProgressArea = 'vocabulary' | 'listening' | 'reading' | 'writing' | 'speaking';
+
+export interface UserProgress {
+    score: number;
+    completed: Record<ProgressArea, string[]>;
+}
