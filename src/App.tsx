@@ -139,13 +139,26 @@ export default function App() {
 
     const recognition = new Recognition();
     recognition.lang = 'sv-SE';
-    recognition.interimResults = false;
+    recognition.interimResults = true;
     recognition.continuous = false;
+    const startingResponse = response.trim();
     recognition.onresult = (event) => {
-      const transcript = event.results[0]?.[0]?.transcript.trim();
-      if (transcript) {
-        setResponse((current) => current ? `${current} ${transcript}` : transcript);
+      let finalTranscript = '';
+      let interimTranscript = '';
+
+      for (let index = 0; index < event.results.length; index += 1) {
+        const transcript = event.results[index]?.[0]?.transcript ?? '';
+        if (event.results[index]?.isFinal) {
+          finalTranscript += `${transcript} `;
+        } else {
+          interimTranscript += transcript;
+        }
       }
+
+      const combinedTranscript = [startingResponse, finalTranscript.trim(), interimTranscript.trim()]
+        .filter(Boolean)
+        .join(' ');
+      setResponse(combinedTranscript);
     };
     recognition.onerror = (event) => {
       const messages: Record<string, string> = {
