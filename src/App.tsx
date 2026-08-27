@@ -7,6 +7,7 @@ import {
   writingPrompts,
 } from './data/learningMaterials';
 import { createEmptyProgress, getUserProgress, saveUserProgress } from './services/storage';
+import { assessReadiness } from './services/assessment';
 import { ProgressArea, UserProgress } from './types';
 
 function normalize(text: string) {
@@ -32,6 +33,14 @@ const areaLabels: Record<ProgressArea, string> = {
   speaking: 'Puhuminen',
 };
 
+const areaTotals: Record<ProgressArea, number> = {
+  vocabulary: vocabulary.length,
+  listening: listeningExercises.length,
+  reading: readingExercises.length,
+  writing: writingPrompts.length,
+  speaking: speakingPrompts.length,
+};
+
 export default function App() {
   const [wordIndex, setWordIndex] = useState(0);
   const [answer, setAnswer] = useState('');
@@ -39,6 +48,7 @@ export default function App() {
   const [section, setSection] = useState<Section>('home');
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [showListeningText, setShowListeningText] = useState(false);
+  const [showAttemptHistory, setShowAttemptHistory] = useState(false);
   const [progress, setProgress] = useState<UserProgress>(() => {
     const stored = getUserProgress();
     if (stored) return stored;
@@ -50,6 +60,7 @@ export default function App() {
 
   const word = vocabulary[wordIndex];
   const score = progress.score;
+  const readiness = assessReadiness(progress, areaTotals);
 
   useEffect(() => {
     saveUserProgress(progress);
@@ -172,40 +183,44 @@ export default function App() {
             </div>
             <p>Harjoituskertoja: {progress.attempts.length}</p>
             {progress.attempts.length > 0 ? (
-              <ul>
-                {progress.attempts.slice(-5).reverse().map((attempt, index) => (
-                  <li key={`${attempt.completedAt}-${index}`}>
-                    {areaLabels[attempt.area]}: {attempt.correct ? 'oikein' : 'harjoiteltu'}
-                  </li>
-                ))}
-              </ul>
+              <>
+                <button
+                  className="secondary history-toggle"
+                  onClick={() => setShowAttemptHistory((current) => !current)}
+                  aria-expanded={showAttemptHistory}
+                  aria-controls="attempt-history"
+                >
+                  {showAttemptHistory ? 'Piilota harjoitushistoria' : 'Näytä harjoitushistoria'}
+                </button>
+                {showAttemptHistory && (
+                  <ul id="attempt-history">
+                    {progress.attempts.slice(-5).reverse().map((attempt, index) => (
+                      <li key={`${attempt.completedAt}-${index}`}>
+                        {areaLabels[attempt.area]}: {attempt.correct ? 'oikein' : 'harjoiteltu'}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </>
             ) : (
               <p>Vastaushistoriasi näkyy tässä, kun aloitat harjoittelun.</p>
             )}
           </section>
-          <section>
-            <h2>Edistyminen</h2>
-            <div className="areas">
-              {[
-                ['Sanasto', 'vocabulary', vocabulary.length],
-                ['Lukeminen', 'reading', readingExercises.length],
-                ['Kuuntelu', 'listening', listeningExercises.length],
-                ['Kirjoittaminen', 'writing', writingPrompts.length],
-                ['Puhuminen', 'speaking', speakingPrompts.length],
-              ].map(([name, area, total]) => {
-                const progressValue = Math.round(
-                  (progress.completed[area as ProgressArea].length / Number(total)) * 100,
-                );
-                return (
-                <div className="area" key={String(area)}>
-                  <div className="area-header">
-                    <span>{name}</span>
-                    <strong>{progressValue} %</strong>
-                  </div>
-                  <progress value={progressValue} max="100" />
+          <section className="card readiness-card">
+            <div className="area-header">
+              <span>YKI-valmius</span>
+              <strong>{readiness.overall} %</strong>
+            </div>
+            <progress value={readiness.overall} max="100" />
+            <h2>{readiness.level}</h2>
+            <p>Seuraava painopiste: {areaLabels[readiness.recommendation]}</p>
+            <div className="readiness-grid">
+              {Object.entries(readiness.areas).map(([area, value]) => (
+                <div key={area}>
+                  <span>{areaLabels[area as ProgressArea]}</span>
+                  <strong>{value} %</strong>
                 </div>
-                );
-              })}
+              ))}
             </div>
           </section>
         </>
