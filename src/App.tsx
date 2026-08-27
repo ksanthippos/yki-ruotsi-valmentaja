@@ -36,6 +36,7 @@ export default function App() {
   const [feedback, setFeedback] = useState('');
   const [section, setSection] = useState<Section>('home');
   const [exerciseIndex, setExerciseIndex] = useState(0);
+  const [showListeningText, setShowListeningText] = useState(false);
   const [score, setScore] = useState(() =>
     Number(localStorage.getItem('yki-score') ?? 0),
   );
@@ -68,6 +69,7 @@ export default function App() {
     setExerciseIndex(0);
     setAnswer('');
     setFeedback('');
+    setShowListeningText(false);
   }
 
   function checkChoice(choice: string, correctAnswer: string) {
@@ -92,6 +94,7 @@ export default function App() {
   function nextExercise(length: number) {
     setExerciseIndex((current) => (current + 1) % length);
     setFeedback('');
+    setShowListeningText(false);
   }
 
   const listening = listeningExercises[exerciseIndex % listeningExercises.length];
@@ -165,6 +168,19 @@ export default function App() {
           <div className="area-header"><span>Kuuntelu {listening.id}</span><strong>Pisteet: {score}</strong></div>
           <h2>Kuuntele ja ymmärrä</h2>
           <button onClick={() => speak(listening.text)}>🔊 Kuuntele ruotsiksi</button>
+          <button
+            className="secondary text-toggle"
+            onClick={() => setShowListeningText((current) => !current)}
+            aria-expanded={showListeningText}
+            aria-controls="listening-transcript"
+          >
+            {showListeningText ? 'Piilota kuuntelun teksti' : 'Näytä kuuntelun teksti'}
+          </button>
+          {showListeningText && (
+            <p id="listening-transcript" className="listening-text">
+              {listening.text}
+            </p>
+          )}
           <p>{listening.question}</p>
           {renderExerciseOptions(listening.options, listening.answer)}
           {feedback && <p><strong>{feedback}</strong></p>}

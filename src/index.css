@@ -107,6 +107,19 @@ textarea {
   background: #64748b;
 }
 
+.text-toggle {
+  margin-left: 10px;
+}
+
+.listening-text {
+  margin: 16px 0;
+  padding: 14px;
+  color: #334155;
+  background: #f3f6fb;
+  border-left: 4px solid #356ae6;
+  line-height: 1.6;
+}
+
 .next-button {
   margin-left: 10px;
 }
