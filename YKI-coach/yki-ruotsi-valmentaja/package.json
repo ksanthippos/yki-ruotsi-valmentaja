@@ -1,0 +1,34 @@
+{
+  "name": "yki-ruotsi-valmentaja",
+  "version": "1.0.0",
+  "description": "A PWA application to help users prepare for the YKI exam in Swedish, focusing on vocabulary and teaching terminology.",
+  "main": "src/main.tsx",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "dev": "vite"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^5.3.4"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-react": "^6.1.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2"
+  },
+  "keywords": [
+    "PWA",
+    "YKI",
+    "language learning",
+    "Swedish",
+    "education"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
