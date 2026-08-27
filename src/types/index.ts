@@ -27,7 +27,15 @@ export interface TeachingSubject {
 
 export type ProgressArea = 'vocabulary' | 'listening' | 'reading' | 'writing' | 'speaking';
 
+export interface ExerciseAttempt {
+    area: ProgressArea;
+    id: string;
+    correct: boolean;
+    completedAt: string;
+}
+
 export interface UserProgress {
     score: number;
     completed: Record<ProgressArea, string[]>;
+    attempts: ExerciseAttempt[];
 }

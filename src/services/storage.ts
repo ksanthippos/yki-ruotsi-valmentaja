@@ -11,6 +11,7 @@ const emptyProgress: UserProgress = {
         writing: [],
         speaking: [],
     },
+    attempts: [],
 };
 
 function isProgressArea(value: string): value is ProgressArea {
@@ -40,6 +41,7 @@ export const getUserProgress = (): UserProgress | null => {
         return {
             score: typeof parsed.score === 'number' ? parsed.score : 0,
             completed,
+            attempts: Array.isArray(parsed.attempts) ? parsed.attempts : [],
         };
     } catch {
         return null;
@@ -55,6 +57,7 @@ export const createEmptyProgress = (): UserProgress => ({
         writing: [],
         speaking: [],
     },
+    attempts: [],
 });
 
 export const clearUserProgress = () => {

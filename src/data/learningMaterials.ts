@@ -4,6 +4,7 @@ export type ListeningExercise = {
   question: string;
   options: string[];
   answer: string;
+  difficulty: 'easy' | 'medium' | 'hard';
 };
 
 export type ReadingExercise = {
@@ -13,6 +14,7 @@ export type ReadingExercise = {
   question: string;
   options: string[];
   answer: string;
+  difficulty: 'easy' | 'medium' | 'hard';
 };
 
 export const listeningExercises: ListeningExercise[] = [
@@ -22,6 +24,7 @@ export const listeningExercises: ListeningExercise[] = [
     question: 'Vad undersöker klassen?',
     options: ['En pendel', 'En ekvation', 'En karta'],
     answer: 'En pendel',
+    difficulty: 'easy',
   },
   {
     id: 2,
@@ -29,6 +32,7 @@ export const listeningExercises: ListeningExercise[] = [
     question: 'Vad ska eleven göra?',
     options: ['Rita en karta', 'Skriva ner formeln och förklara svaret', 'Läsa en bok'],
     answer: 'Skriva ner formeln och förklara svaret',
+    difficulty: 'medium',
   },
 ];
 
@@ -40,6 +44,7 @@ export const readingExercises: ReadingExercise[] = [
     question: 'Vad gör eleverna med resultaten?',
     options: ['De skriver dem i en tabell', 'De kastar bort dem', 'De ritar en karta'],
     answer: 'De skriver dem i en tabell',
+    difficulty: 'easy',
   },
   {
     id: 2,
@@ -48,6 +53,7 @@ export const readingExercises: ReadingExercise[] = [
     question: 'Hur arbetar eleverna?',
     options: ['Ensamma', 'I par och med olika roller', 'Bara hemma'],
     answer: 'I par och med olika roller',
+    difficulty: 'medium',
   },
 ];
 

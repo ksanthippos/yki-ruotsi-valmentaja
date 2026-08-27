@@ -137,6 +137,17 @@ textarea {
   font-size: 0.9rem;
 }
 
+.difficulty {
+  color: #356ae6;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.practice-summary ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
 .area-header {
   display: flex;
   justify-content: space-between;

@@ -24,6 +24,14 @@ const menuItems: { id: Section; label: string }[] = [
   { id: 'speaking', label: 'Puhuminen' },
 ];
 
+const areaLabels: Record<ProgressArea, string> = {
+  vocabulary: 'Sanasto',
+  listening: 'Kuuntelu',
+  reading: 'Lukeminen',
+  writing: 'Kirjoittaminen',
+  speaking: 'Puhuminen',
+};
+
 export default function App() {
   const [wordIndex, setWordIndex] = useState(0);
   const [answer, setAnswer] = useState('');
@@ -57,6 +65,15 @@ export default function App() {
         completed: alreadyCompleted
           ? current.completed
           : { ...current.completed, [area]: [...completed, id] },
+        attempts: [
+          ...current.attempts,
+          {
+            area,
+            id,
+            correct: points > 0,
+            completedAt: new Date().toISOString(),
+          },
+        ],
       };
     });
   }
@@ -148,6 +165,24 @@ export default function App() {
             <p>Valitse valikosta osa-alue ja harjoittele 15 minuuttia.</p>
             <button onClick={() => selectSection('vocabulary')}>Aloita sanastosta</button>
           </section>
+          <section className="card practice-summary">
+            <div className="area-header">
+              <span>Harjoittelun yhteenveto</span>
+              <strong>{score} pistettä</strong>
+            </div>
+            <p>Harjoituskertoja: {progress.attempts.length}</p>
+            {progress.attempts.length > 0 ? (
+              <ul>
+                {progress.attempts.slice(-5).reverse().map((attempt, index) => (
+                  <li key={`${attempt.completedAt}-${index}`}>
+                    {areaLabels[attempt.area]}: {attempt.correct ? 'oikein' : 'harjoiteltu'}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>Vastaushistoriasi näkyy tässä, kun aloitat harjoittelun.</p>
+            )}
+          </section>
           <section>
             <h2>Edistyminen</h2>
             <div className="areas">
@@ -198,6 +233,7 @@ export default function App() {
         <section className="card">
           <div className="area-header"><span>Kuuntelu {listening.id}</span><strong>Pisteet: {score}</strong></div>
           <h2>Kuuntele ja ymmärrä</h2>
+          <p className="difficulty">Vaikeustaso: {listening.difficulty === 'easy' ? 'Perustaso' : listening.difficulty === 'medium' ? 'Keskitaso' : 'Haastava'}</p>
           <button onClick={() => speak(listening.text)}>🔊 Kuuntele ruotsiksi</button>
           <button
             className="secondary text-toggle"
@@ -225,6 +261,7 @@ export default function App() {
         <section className="card">
           <div className="area-header"><span>Lukeminen {reading.id}</span><strong>Pisteet: {score}</strong></div>
           <h2>{reading.title}</h2>
+          <p className="difficulty">Vaikeustaso: {reading.difficulty === 'easy' ? 'Perustaso' : reading.difficulty === 'medium' ? 'Keskitaso' : 'Haastava'}</p>
           <p className="reading-text">{reading.text}</p>
           <p>{reading.question}</p>
           {renderExerciseOptions(reading.options, reading.answer)}
@@ -240,6 +277,7 @@ export default function App() {
         <div className="area-header"><span>{section === 'writing' ? 'Kirjoittaminen' : 'Puhuminen'}</span><strong>Pisteet: {score}</strong></div>
         <h2>{section === 'writing' ? 'Kirjoitustehtävä' : 'Puhumistehtävä'}</h2>
         <p>{prompts[exerciseIndex % prompts.length]}</p>
+        <p className="difficulty">Vaikeustaso: {section === 'writing' ? (['Perustaso', 'Keskitaso', 'Keskitaso'] as const)[exerciseIndex % prompts.length] : (['Keskitaso', 'Keskitaso', 'Haastava'] as const)[exerciseIndex % prompts.length]}</p>
         <textarea placeholder={section === 'writing' ? 'Kirjoita vastauksesi ruotsiksi...' : 'Kirjoita ensin muistiinpanosi...'} />
         <p className="hint">Tavoittele selkeää rakennetta ja käytä mahdollisimman monipuolista sanastoa.</p>
         <button onClick={() => {
