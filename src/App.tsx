@@ -4,7 +4,9 @@ import {
   listeningExercises,
   readingExercises,
   speakingPrompts,
+  speakingDifficulties,
   writingPrompts,
+  writingDifficulties,
 } from './data/learningMaterials';
 import { createEmptyProgress, getUserProgress, saveUserProgress } from './services/storage';
 import { assessReadiness } from './services/assessment';
@@ -292,7 +294,7 @@ export default function App() {
         <div className="area-header"><span>{section === 'writing' ? 'Kirjoittaminen' : 'Puhuminen'}</span><strong>Pisteet: {score}</strong></div>
         <h2>{section === 'writing' ? 'Kirjoitustehtävä' : 'Puhumistehtävä'}</h2>
         <p>{prompts[exerciseIndex % prompts.length]}</p>
-        <p className="difficulty">Vaikeustaso: {section === 'writing' ? (['Perustaso', 'Keskitaso', 'Keskitaso'] as const)[exerciseIndex % prompts.length] : (['Keskitaso', 'Keskitaso', 'Haastava'] as const)[exerciseIndex % prompts.length]}</p>
+        <p className="difficulty">Vaikeustaso: {(section === 'writing' ? writingDifficulties : speakingDifficulties)[exerciseIndex % prompts.length] === 'easy' ? 'Perustaso' : (section === 'writing' ? writingDifficulties : speakingDifficulties)[exerciseIndex % prompts.length] === 'medium' ? 'Keskitaso' : 'Haastava'}</p>
         <textarea placeholder={section === 'writing' ? 'Kirjoita vastauksesi ruotsiksi...' : 'Kirjoita ensin muistiinpanosi...'} />
         <p className="hint">Tavoittele selkeää rakennetta ja käytä mahdollisimman monipuolista sanastoa.</p>
         <button onClick={() => {

@@ -72,6 +72,42 @@ export const vocabulary: VocabularyItem[] = [
         example: "Jämför era resultat med varandra.",
         category: "Opetuskieli",
     },
+    {
+        swedish: "en ansökan",
+        finnish: "hakemus",
+        example: "Jag skickade in en ansökan till utbildningen.",
+        category: "Koulutus ja työ",
+    },
+    {
+        swedish: "en tid hos läkaren",
+        finnish: "lääkäriaika",
+        example: "Jag behöver boka en tid hos läkaren.",
+        category: "Terveys ja asiointi",
+    },
+    {
+        swedish: "en räkning",
+        finnish: "lasku",
+        example: "Jag betalar räkningen på nätet.",
+        category: "Asiointi",
+    },
+    {
+        swedish: "en arbetsintervju",
+        finnish: "työhaastattelu",
+        example: "Hon har en arbetsintervju på fredag.",
+        category: "Koulutus ja työ",
+    },
+    {
+        swedish: "att boka",
+        finnish: "varata",
+        example: "Kan du boka ett mötesrum?",
+        category: "Asiointi",
+    },
+    {
+        swedish: "en åsikt",
+        finnish: "mielipide",
+        example: "Alla får uttrycka sin åsikt.",
+        category: "Yhteiskunta",
+    },
 ];
 
 export const vocabularySource = {

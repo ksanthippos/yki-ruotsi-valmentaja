@@ -34,6 +34,22 @@ export const listeningExercises: ListeningExercise[] = [
     answer: 'Skriva ner formeln och förklara svaret',
     difficulty: 'medium',
   },
+  {
+    id: 3,
+    text: 'Vårdcentralen öppnar klockan åtta. Du kan boka en tid via telefon eller på nätet.',
+    question: 'Hur kan man boka en tid?',
+    options: ['Bara på kvällen', 'Via telefon eller på nätet', 'Genom att skriva ett brev'],
+    answer: 'Via telefon eller på nätet',
+    difficulty: 'medium',
+  },
+  {
+    id: 4,
+    text: 'På fredag har vi en arbetsintervju. Ta med ditt CV och kom tio minuter tidigare.',
+    question: 'Vad ska personen ta med?',
+    options: ['En lärobok', 'Ett CV', 'En biljett'],
+    answer: 'Ett CV',
+    difficulty: 'easy',
+  },
 ];
 
 export const readingExercises: ReadingExercise[] = [
@@ -55,16 +71,42 @@ export const readingExercises: ReadingExercise[] = [
     answer: 'I par och med olika roller',
     difficulty: 'medium',
   },
+  {
+    id: 3,
+    title: 'Ett meddelande från vårdcentralen',
+    text: 'Vårdcentralen påminner patienterna om att avboka tiden om de inte kan komma. På så sätt får någon annan möjlighet att träffa läkaren.',
+    question: 'Varför ska man avboka en tid?',
+    options: ['För att någon annan ska kunna få tiden', 'För att läkaren ska sluta arbeta', 'För att boka en semester'],
+    answer: 'För att någon annan ska kunna få tiden',
+    difficulty: 'hard',
+  },
+  {
+    id: 4,
+    title: 'Ansökan till en kurs',
+    text: 'Mikael vill gå en kvällskurs i svenska. Han fyller i ansökan på nätet och skickar den före den sista ansökningsdagen.',
+    question: 'Hur skickar Mikael sin ansökan?',
+    options: ['På nätet', 'Med fax', 'Muntligt i klassrummet'],
+    answer: 'På nätet',
+    difficulty: 'medium',
+  },
 ];
 
 export const writingPrompts = [
   'Skriv ett kort meddelande till en elev och förklara hur man lämnar in en uppgift.',
   'Beskriv ett enkelt experiment och skriv vilka resultat du förväntar dig.',
   'Skriv varför matematik är viktigt i vardagen.',
+  'Skriv ett meddelande till vårdcentralen och be om en ny tid.',
+  'Skriv en kort ansökan till en kurs eller ett arbete.',
 ];
+
+export const writingDifficulties = ['easy', 'medium', 'medium', 'medium', 'hard'] as const;
 
 export const speakingPrompts = [
   'Förklara för en elev hur man löser en enkel ekvation.',
   'Berätta om en fysiklektion som du skulle vilja hålla.',
   'Beskriv hur du ger konstruktiv respons på en elevs svar.',
+  'Berätta hur du bokar en tid eller sköter ett annat vardagsärende.',
+  'Uttryck din åsikt om hur skolan kan stödja elevernas välmående.',
 ];
+
+export const speakingDifficulties = ['medium', 'medium', 'hard', 'easy', 'hard'] as const;

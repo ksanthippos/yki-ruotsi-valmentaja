@@ -1,31 +1,46 @@
-import { UserProgress, AssessmentResult } from '../types';
+import { ProgressArea, UserProgress } from '../types';
 
-export const evaluateUserPerformance = (progress: UserProgress): AssessmentResult => {
-    const { vocabularyScore, exerciseCompletionRate, examReadinessScore } = progress;
+export interface ReadinessResult {
+    overall: number;
+    areas: Record<ProgressArea, number>;
+    level: string;
+    recommendation: ProgressArea;
+}
 
-    const overallScore = (vocabularyScore + exerciseCompletionRate + examReadinessScore) / 3;
+const areaOrder: ProgressArea[] = [
+    'vocabulary',
+    'listening',
+    'reading',
+    'writing',
+    'speaking',
+];
 
-    let assessment: AssessmentResult;
+export function assessReadiness(
+    progress: UserProgress,
+    totals: Record<ProgressArea, number>,
+): ReadinessResult {
+    const areas = areaOrder.reduce((result, area) => {
+        const completed = progress.completed[area].length;
+        const attempts = progress.attempts.filter((attempt) => attempt.area === area);
+        const correct = attempts.filter((attempt) => attempt.correct).length;
+        const completion = totals[area] > 0 ? (completed / totals[area]) * 100 : 0;
+        const accuracy = attempts.length > 0 ? (correct / attempts.length) * 100 : 0;
 
-    if (overallScore >= 85) {
-        assessment = { level: 'Excellent', ready: true };
-    } else if (overallScore >= 70) {
-        assessment = { level: 'Good', ready: true };
-    } else if (overallScore >= 50) {
-        assessment = { level: 'Satisfactory', ready: false };
-    } else {
-        assessment = { level: 'Needs Improvement', ready: false };
-    }
+        result[area] = Math.round((completion * 0.6) + (accuracy * 0.4));
+        return result;
+    }, {} as Record<ProgressArea, number>);
 
-    return assessment;
-};
+    const overall = Math.round(
+        areaOrder.reduce((sum, area) => sum + areas[area], 0) / areaOrder.length,
+    );
+    const recommendation = areaOrder.reduce((lowest, area) => (
+        areas[area] < areas[lowest] ? area : lowest
+    ), areaOrder[0]);
 
-export const trackProgress = (userId: string, progress: UserProgress): void => {
-    // Logic to save user progress to storage or database
-    console.log(`Tracking progress for user ${userId}:`, progress);
-};
-
-export const assessExamReadiness = (progress: UserProgress): boolean => {
-    const { examReadinessScore } = progress;
-    return examReadinessScore >= 75; // Example threshold for readiness
-};
+    return {
+        overall,
+        areas,
+        level: overall >= 75 ? 'Hyvä valmius' : overall >= 45 ? 'Kehittyvä valmius' : 'Perusta rakennetaan',
+        recommendation,
+    };
+}
