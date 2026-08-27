@@ -1,20 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Exercise } from '../types';
-import { fetchExercises } from '../services/assessment';
+import React, { useState } from 'react';
+import { readingExercises } from '../data/learningMaterials';
 
 const ExerciseView: React.FC = () => {
-    const [exercises, setExercises] = useState<Exercise[]>([]);
+    const exercises = readingExercises;
     const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
     const [userAnswer, setUserAnswer] = useState('');
     const [feedback, setFeedback] = useState('');
-
-    useEffect(() => {
-        const loadExercises = async () => {
-            const fetchedExercises = await fetchExercises();
-            setExercises(fetchedExercises);
-        };
-        loadExercises();
-    }, []);
 
     const handleAnswerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUserAnswer(event.target.value);

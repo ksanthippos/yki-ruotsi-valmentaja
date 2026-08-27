@@ -1,36 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { listeningExercises, readingExercises, speakingPrompts, writingPrompts } from '../data/learningMaterials';
+import { vocabulary } from '../data/vocabulary';
 import { assessReadiness } from '../services/assessment';
-import { Progress } from './ProgressDashboard';
+import { getUserProgress } from '../services/storage';
+import { ProgressArea } from '../types';
 
 const ExamReadiness: React.FC = () => {
-    const [readinessScore, setReadinessScore] = useState<number | null>(null);
-    const [progress, setProgress] = useState<Progress | null>(null);
-
-    useEffect(() => {
-        const score = assessReadiness();
-        setReadinessScore(score);
-        // Assume fetchProgress is a function that retrieves user's progress
-        const userProgress = fetchProgress();
-        setProgress(userProgress);
-    }, []);
+    const progress = getUserProgress();
+    const totals: Record<ProgressArea, number> = {
+        vocabulary: vocabulary.length,
+        listening: listeningExercises.length,
+        reading: readingExercises.length,
+        writing: writingPrompts.length,
+        speaking: speakingPrompts.length,
+    };
+    const readiness = progress ? assessReadiness(progress, totals) : null;
 
     return (
         <div className="exam-readiness">
-            <h2>YKI Exam Readiness</h2>
-            {readinessScore !== null ? (
+            <h2>YKI-valmius</h2>
+            {readiness ? (
                 <div>
-                    <p>Your readiness score: {readinessScore}</p>
-                    <p>{readinessScore >= 75 ? 'You are ready for the exam!' : 'You may need more practice.'}</p>
+                    <p>Valmius: {readiness.overall} %</p>
+                    <p>{readiness.level}</p>
+                    <p>Seuraava painopiste: {readiness.recommendation}</p>
                 </div>
             ) : (
-                <p>Loading readiness assessment...</p>
-            )}
-            {progress && (
-                <div>
-                    <h3>Your Progress</h3>
-                    <p>Vocabulary learned: {progress.vocabularyLearned}</p>
-                    <p>Exercises completed: {progress.exercisesCompleted}</p>
-                </div>
+                <p>Aloita harjoittelu nähdäksesi valmiusarvion.</p>
             )}
         </div>
     );
