@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { vocabulary, vocabularySource } from './data/vocabulary';
 import {
   listeningExercises,
@@ -74,6 +74,8 @@ export default function App() {
   const [isListening, setIsListening] = useState(false);
   const [speechError, setSpeechError] = useState('');
   const [difficulty, setDifficulty] = useState<Difficulty>('medium');
+  const [backupMessage, setBackupMessage] = useState('');
+  const importInputRef = useRef<HTMLInputElement | null>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const [vocabularyOrder, setVocabularyOrder] = useState(() => shuffled(vocabulary.map((_, index) => index)));
   const [listeningOrder, setListeningOrder] = useState(() => shuffled(listeningExercises.map((_, index) => index)));
@@ -116,6 +118,65 @@ export default function App() {
     saveUserProgress(progress);
     localStorage.setItem('yki-score', String(progress.score));
   }, [progress]);
+
+  function exportProgress() {
+    const backup = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      progress,
+    };
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `yki-ruotsi-progressio-${new Date().toISOString().slice(0, 10)}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    setBackupMessage('Progressio ladattu JSON-tiedostona. Tallenna se iCloud Driveen.');
+  }
+
+  function importProgress(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const backup = JSON.parse(String(reader.result)) as {
+          version?: number;
+          progress?: Partial<UserProgress>;
+        };
+        const imported = backup.progress;
+        const validAreas = ['vocabulary', 'listening', 'reading', 'writing', 'speaking'] as const;
+        const valid = backup.version === 1
+          && imported
+          && typeof imported.score === 'number'
+          && imported.completed
+          && validAreas.every((area) => Array.isArray(imported.completed?.[area]))
+          && Array.isArray(imported.attempts);
+
+        if (!valid) throw new Error('Invalid progress backup');
+        if (!window.confirm('Korvataanko nykyinen progressio tuodulla tiedostolla?')) return;
+
+        setProgress({
+          score: imported.score as number,
+          completed: validAreas.reduce((completed, area) => ({
+            ...completed,
+            [area]: imported.completed?.[area]?.filter((id): id is string => typeof id === 'string') ?? [],
+          }), {} as UserProgress['completed']),
+          attempts: (imported.attempts ?? []).filter((attempt) => (
+            attempt && typeof attempt === 'object'
+          )) as UserProgress['attempts'],
+        });
+        setBackupMessage('Progressio tuotu onnistuneesti.');
+      } catch {
+        setBackupMessage('Tiedostoa ei voitu tuoda. Valitse YKI-sovelluksen JSON-varmuuskopio.');
+      }
+    };
+    reader.onerror = () => setBackupMessage('Tiedoston lukeminen epäonnistui. Yritä uudelleen.');
+    reader.readAsText(file);
+  }
 
   function completeExercise(area: ProgressArea, id: string, points = 0) {
     setProgress((current) => {
@@ -364,6 +425,19 @@ export default function App() {
               <progress value={Math.min(todayPoints, dailyGoal)} max={dailyGoal} />
               <p className="hint">Tavoite: {dailyGoal} pistettä</p>
             </div>
+            <div className="backup-actions">
+              <button className="secondary" onClick={exportProgress}>Vie progressio</button>
+              <button className="secondary" onClick={() => importInputRef.current?.click()}>Tuo progressio</button>
+              <input
+                ref={importInputRef}
+                className="visually-hidden"
+                type="file"
+                accept="application/json,.json"
+                onChange={importProgress}
+                aria-label="Valitse progressiotiedosto"
+              />
+            </div>
+            {backupMessage && <p className="hint" role="status">{backupMessage}</p>}
           </section>
           <section className="card practice-summary">
             <div className="area-header">
