@@ -6,7 +6,7 @@ import {
   speakingPrompts,
   writingPrompts,
 } from './data/learningMaterials';
-import { createEmptyProgress, getUserProgress, saveUserProgress } from './services/storage';
+import { clearUserProgress, createEmptyProgress, getUserProgress, saveUserProgress } from './services/storage';
 import { assessReadiness } from './services/assessment';
 import { Difficulty, ProgressArea, Topic, UserProgress } from './types';
 import { APP_VERSION } from './version';
@@ -24,7 +24,7 @@ function isToday(date: string) {
 }
 
 type Section = 'home' | 'vocabulary' | 'listening' | 'reading' | 'writing' | 'speaking';
-type PrimaryView = 'home' | 'practice' | 'history' | 'dictionary';
+type PrimaryView = 'home' | 'practice' | 'history' | 'dictionary' | 'settings' | 'info';
 type DictionaryDirection = 'fi-sv' | 'sv-fi';
 
 const menuItems: { id: Section; label: string }[] = [
@@ -75,6 +75,7 @@ export default function App() {
   const [feedback, setFeedback] = useState('');
   const [section, setSection] = useState<Section>('home');
   const [primaryView, setPrimaryView] = useState<PrimaryView>('home');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [showListeningText, setShowListeningText] = useState(false);
   const [showAttemptHistory, setShowAttemptHistory] = useState(false);
@@ -299,8 +300,23 @@ export default function App() {
 
   function selectPrimaryView(view: PrimaryView) {
     setPrimaryView(view);
+    setIsMenuOpen(false);
     if (view === 'home') setSection('home');
     if (view === 'practice' && section === 'home') setSection('vocabulary');
+  }
+
+  function resetProgress() {
+    if (!window.confirm('Poistetaanko kaikki pisteet ja harjoitushistoria?')) return;
+
+    clearUserProgress();
+    localStorage.removeItem('yki-score');
+    setProgress(createEmptyProgress());
+    setSection('home');
+    setPrimaryView('home');
+    setFeedback('');
+    setResponse('');
+    setAnswer('');
+    setBackupMessage('Progressio on nollattu.');
   }
 
   function searchDictionary(queryOverride?: string) {
@@ -534,6 +550,31 @@ export default function App() {
   }
 
   function renderSection() {
+    if (primaryView === 'settings') {
+      return (
+        <section className="card utility-view">
+          <button className="back-button secondary" onClick={() => selectPrimaryView('home')}>← Takaisin</button>
+          <h2>Asetukset</h2>
+          <div className="settings-item">
+            <div>
+              <strong>Nollaa progressio</strong>
+              <p className="hint">Poistaa pisteet, suoritetut tehtävät ja harjoitushistorian tältä laitteelta.</p>
+            </div>
+            <button className="danger" onClick={resetProgress}>Nollaa kaikki</button>
+          </div>
+        </section>
+      );
+    }
+    if (primaryView === 'info') {
+      return (
+        <section className="card utility-view">
+          <button className="back-button secondary" onClick={() => selectPrimaryView('home')}>← Takaisin</button>
+          <h2>Tietoja sovelluksesta</h2>
+          <p>YKI Ruotsi -valmentaja</p>
+          <p className="app-version-large">Versio {APP_VERSION}</p>
+        </section>
+      );
+    }
     if (primaryView === 'history') return renderHistory();
     if (primaryView === 'dictionary') {
       return (
@@ -770,6 +811,24 @@ export default function App() {
     <main className="app">
       <header>
         <p className="app-version">Versio {APP_VERSION}</p>
+        <div className="top-bar">
+          <span aria-hidden="true"></span>
+          <button
+            className="menu-button"
+            onClick={() => setIsMenuOpen((current) => !current)}
+            aria-label={isMenuOpen ? 'Sulje valikko' : 'Avaa valikko'}
+            aria-expanded={isMenuOpen}
+            aria-controls="app-menu"
+          >
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+        {isMenuOpen && (
+          <div className="app-menu" id="app-menu">
+            <button onClick={() => selectPrimaryView('settings')}>Asetukset</button>
+            <button onClick={() => selectPrimaryView('info')}>Tietoja</button>
+          </div>
+        )}
         <p className="eyebrow"></p>
         <h1>YKI-valmentaja</h1>
         
