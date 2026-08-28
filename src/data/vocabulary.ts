@@ -35,6 +35,38 @@ export const vocabulary: VocabularyItem[] = [
     { swedish: 'att behöva', finnish: 'tarvita', example: 'Jag behöver mer tid för uppgiften.', category: 'Koulutus ja työ', difficulty: 'easy', topic: 'school' },
 ];
 
+const additionalVocabulary: VocabularyItem[] = [
+    { swedish: 'en skola', finnish: 'koulu', example: 'Min syster arbetar på en skola.', category: 'Koulumaailma', difficulty: 'easy', topic: 'school' },
+    { swedish: 'en lärare', finnish: 'opettaja', example: 'Läraren förklarar uppgiften.', category: 'Koulumaailma', difficulty: 'easy', topic: 'school' },
+    { swedish: 'en elev', finnish: 'oppilas', example: 'Eleven läser instruktionen.', category: 'Koulumaailma', difficulty: 'easy', topic: 'school' },
+    { swedish: 'ett klassrum', finnish: 'luokkahuone', example: 'Vi träffas i klassrummet.', category: 'Koulumaailma', difficulty: 'easy', topic: 'school' },
+    { swedish: 'en läxa', finnish: 'kotitehtävä', example: 'Jag gör min läxa på kvällen.', category: 'Koulumaailma', difficulty: 'easy', topic: 'school' },
+    { swedish: 'en lektion', finnish: 'oppitunti', example: 'Lektionen börjar klockan nio.', category: 'Koulumaailma', difficulty: 'easy', topic: 'school' },
+    { swedish: 'ett prov', finnish: 'koe', example: 'Vi har ett prov på fredag.', category: 'Koulumaailma', difficulty: 'medium', topic: 'school' },
+    { swedish: 'en lösning', finnish: 'ratkaisu', example: 'Hitta en lösning på problemet.', category: 'Matematiikka ja fysiikka', difficulty: 'medium', topic: 'stem' },
+    { swedish: 'en sträcka', finnish: 'matka', example: 'Mät sträckan mellan punkterna.', category: 'Matematiikka ja fysiikka', difficulty: 'medium', topic: 'stem' },
+    { swedish: 'en temperatur', finnish: 'lämpötila', example: 'Temperaturen sjunker under natten.', category: 'Matematiikka ja fysiikka', difficulty: 'easy', topic: 'stem' },
+    { swedish: 'en energi', finnish: 'energia', example: 'Energi kan ändra form.', category: 'Matematiikka ja fysiikka', difficulty: 'medium', topic: 'stem' },
+    { swedish: 'en rörelse', finnish: 'liike', example: 'Vi studerar föremålets rörelse.', category: 'Matematiikka ja fysiikka', difficulty: 'medium', topic: 'stem' },
+    { swedish: 'en hastighet', finnish: 'nopeus', example: 'Beräkna bilens hastighet.', category: 'Matematiikka ja fysiikka', difficulty: 'medium', topic: 'stem' },
+    { swedish: 'en volym', finnish: 'tilavuus', example: 'Räkna ut lådans volym.', category: 'Matematiikka ja fysiikka', difficulty: 'hard', topic: 'stem' },
+    { swedish: 'en yta', finnish: 'pinta-ala', example: 'Bestäm figurens yta.', category: 'Matematiikka ja fysiikka', difficulty: 'hard', topic: 'stem' },
+    { swedish: 'en bråkdel', finnish: 'murtoluku', example: 'Förenkla bråkdelen.', category: 'Matematiikka ja fysiikka', difficulty: 'hard', topic: 'stem' },
+    { swedish: 'en variabel', finnish: 'muuttuja', example: 'X är en variabel i ekvationen.', category: 'Matematiikka ja fysiikka', difficulty: 'hard', topic: 'stem' },
+    { swedish: 'en hypotes', finnish: 'hypoteesi', example: 'Vi formulerar en hypotes före experimentet.', category: 'Matematiikka ja fysiikka', difficulty: 'hard', topic: 'stem' },
+    { swedish: 'en felkälla', finnish: 'virhelähde', example: 'Diskutera möjliga felkällor.', category: 'Matematiikka ja fysiikka', difficulty: 'hard', topic: 'stem' },
+    { swedish: 'en undersökning', finnish: 'tutkimus', example: 'Undersökningen visar ett tydligt resultat.', category: 'Matematiikka ja fysiikka', difficulty: 'hard', topic: 'stem' },
+    { swedish: 'en vardag', finnish: 'arki', example: 'Svenska behövs i vardagen.', category: 'Yleinen ruotsi ja arki', difficulty: 'easy', topic: 'general' },
+    { swedish: 'en adress', finnish: 'osoite', example: 'Vilken är din adress?', category: 'Yleinen ruotsi ja arki', difficulty: 'easy', topic: 'general' },
+    { swedish: 'en tid', finnish: 'aika', example: 'Jag har inte tid idag.', category: 'Yleinen ruotsi ja arki', difficulty: 'easy', topic: 'general' },
+    { swedish: 'en hjälp', finnish: 'apu', example: 'Tack för din hjälp.', category: 'Yleinen ruotsi ja arki', difficulty: 'easy', topic: 'general' },
+    { swedish: 'ett problem', finnish: 'ongelma', example: 'Vi försöker lösa problemet.', category: 'Yleinen ruotsi ja arki', difficulty: 'medium', topic: 'general' },
+    { swedish: 'en förändring', finnish: 'muutos', example: 'Förändringen påverkar alla.', category: 'Yleinen ruotsi ja arki', difficulty: 'medium', topic: 'general' },
+    { swedish: 'att påverka', finnish: 'vaikuttaa', example: 'Beslutet påverkar eleverna.', category: 'Yleinen ruotsi ja arki', difficulty: 'hard', topic: 'general' },
+];
+
+vocabulary.push(...additionalVocabulary);
+
 export const vocabularySource = {
     title: 'Ylen materiaali',
     url: 'https://yle.fi/a/20-146198',

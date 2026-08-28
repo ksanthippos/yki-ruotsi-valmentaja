@@ -30,6 +30,33 @@ export const listeningExercises: ListeningExercise[] = [
   { id: 6, text: 'Resultatet blev annorlunda än vi trodde. Därför måste vi kontrollera mätningen och diskutera möjliga felkällor.', question: 'Vad måste klassen göra?', options: ['Kontrollera mätningen', 'Byta skola', 'Avsluta kursen'], answer: 'Kontrollera mätningen', difficulty: 'hard', topic: 'stem' },
 ];
 
+const listeningTemplates = [
+  ['Bussen till skolan går klockan sju.', 'När går bussen?', ['Klockan sex', 'Klockan sju', 'Klockan åtta'], 'Klockan sju', 'school'],
+  ['Jag har glömt min bok hemma och behöver låna en.', 'Vad behöver personen?', ['En penna', 'En bok', 'En biljett'], 'En bok', 'school'],
+  ['Mötet börjar på biblioteket efter lunch.', 'Var börjar mötet?', ['På biblioteket', 'På stationen', 'I matsalen'], 'På biblioteket', 'general'],
+  ['Kom ihåg att ta med regnkläder till utflykten.', 'Vad ska man ta med?', ['Regnkläder', 'Badkläder', 'En cykel'], 'Regnkläder', 'general'],
+  ['Eleverna använder en linjal för att mäta sträckan.', 'Vad använder eleverna?', ['En våg', 'En linjal', 'En karta'], 'En linjal', 'stem'],
+  ['Vattnet värms upp och temperaturen skrivs ned varje minut.', 'Vad skrivs ned?', ['Tiden', 'Temperaturen', 'Namnen'], 'Temperaturen', 'stem'],
+  ['Du kan betala räkningen med kort eller banköverföring.', 'Hur kan man betala?', ['Med kort eller banköverföring', 'Bara kontant', 'Med en biljett'], 'Med kort eller banköverföring', 'general'],
+  ['Läraren ber eleverna att läsa instruktionen noggrant.', 'Vad ska eleverna läsa?', ['En roman', 'Instruktionen', 'En tidning'], 'Instruktionen', 'school'],
+  ['I experimentet jämför vi två olika material.', 'Vad jämför man?', ['Två material', 'Två lärare', 'Två skolor'], 'Två material', 'stem'],
+  ['Kursen hålls på tisdagar och torsdagar.', 'När hålls kursen?', ['På helgen', 'På tisdagar och torsdagar', 'Varje morgon'], 'På tisdagar och torsdagar', 'general'],
+  ['Arbetsintervjun tar ungefär en halvtimme.', 'Hur länge tar intervjun?', ['En halvtimme', 'En hel dag', 'Fem minuter'], 'En halvtimme', 'general'],
+] as const;
+
+listeningExercises.push(...Array.from({ length: 44 }, (_, index) => {
+  const template = listeningTemplates[index % listeningTemplates.length];
+  return {
+    id: 7 + index,
+    text: `${template[0]} Uppgift ${index + 1}.`,
+    question: template[1],
+    options: [...template[2]],
+    answer: template[3],
+    difficulty: (['easy', 'medium', 'hard'] as const)[index % 3],
+    topic: template[4],
+  };
+}));
+
 export const readingExercises: ReadingExercise[] = [
   { id: 1, title: 'En laboration i fysik', text: 'Eleverna mäter temperaturen på vattnet. De skriver resultaten i en tabell och jämför dem med sin hypotes.', question: 'Vad gör eleverna med resultaten?', options: ['De skriver dem i en tabell', 'De kastar bort dem', 'De ritar en karta'], answer: 'De skriver dem i en tabell', difficulty: 'easy', topic: 'stem' },
   { id: 2, title: 'Samarbete i klassrummet', text: 'Eleverna arbetar i par. Den ena löser uppgiften och den andra ställer frågor. Sedan byter de roller.', question: 'Hur arbetar eleverna?', options: ['Ensamma', 'I par och med olika roller', 'Bara hemma'], answer: 'I par och med olika roller', difficulty: 'medium', topic: 'school' },
@@ -38,6 +65,34 @@ export const readingExercises: ReadingExercise[] = [
   { id: 5, title: 'En förändrad lektion', text: 'Läraren planerade en laboration, men flera elever glömde sina skyddsglasögon. Därför arbetar klassen med teori först och gör laborationen nästa vecka.', question: 'Varför ändras lektionens plan?', options: ['Eleverna glömde skyddsglasögonen', 'Läraren är sjuk', 'Laborationen är redan klar'], answer: 'Eleverna glömde skyddsglasögonen', difficulty: 'hard', topic: 'stem' },
   { id: 6, title: 'Information om en utbildning', text: 'Kursen börjar i september och passar personer som vill utveckla sin svenska i arbetslivet. Undervisningen hålls två kvällar i veckan.', question: 'När hålls undervisningen?', options: ['Varje morgon', 'Två kvällar i veckan', 'Bara på lördagar'], answer: 'Två kvällar i veckan', difficulty: 'medium', topic: 'general' },
 ];
+
+const readingTemplates = [
+  ['Skolans bibliotek är öppet varje vardag efter lektionerna.', 'När är biblioteket öppet?', ['På vardagar efter lektionerna', 'Bara på söndagar', 'På morgonen före skolan'], 'På vardagar efter lektionerna', 'school'],
+  ['Sara tar tåget till jobbet eftersom bussen är försenad.', 'Varför tar Sara tåget?', ['Bussen är försenad', 'Hon vill promenera', 'Tåget är billigare'], 'Bussen är försenad', 'general'],
+  ['I tabellen ser vi att temperaturen sjunker när tiden går.', 'Vad händer med temperaturen?', ['Den stiger', 'Den sjunker', 'Den är alltid samma'], 'Den sjunker', 'stem'],
+  ['Läraren delar klassen i små grupper för diskussionen.', 'Hur delas klassen?', ['I små grupper', 'I två skolor', 'Inte alls'], 'I små grupper', 'school'],
+  ['På blanketten ska man skriva sitt namn och telefonnummer.', 'Vad ska man skriva på blanketten?', ['Namn och telefonnummer', 'Bara adressen', 'Kursens pris'], 'Namn och telefonnummer', 'general'],
+  ['Eleverna upprepar mätningen för att få ett säkrare resultat.', 'Varför upprepar eleverna mätningen?', ['För ett säkrare resultat', 'För att sluta tidigt', 'För att byta ämne'], 'För ett säkrare resultat', 'stem'],
+  ['Den nya kursen fokuserar på svenska i arbetslivet.', 'Vad fokuserar kursen på?', ['Svenska i arbetslivet', 'Matlagning', 'Idrott'], 'Svenska i arbetslivet', 'general'],
+  ['Gruppen gör en plan innan de börjar lösa uppgiften.', 'Vad gör gruppen först?', ['En plan', 'En intervju', 'En utflykt'], 'En plan', 'school'],
+  ['Kraften påverkar föremålets rörelse och riktning.', 'Vad påverkar kraften?', ['Föremålets rörelse och riktning', 'Vädret', 'Lektionens längd'], 'Föremålets rörelse och riktning', 'stem'],
+  ['Patienten får ett meddelande med den nya tiden på kvällen.', 'När får patienten meddelandet?', ['På morgonen', 'På kvällen', 'Nästa vecka'], 'På kvällen', 'general'],
+  ['Eleven förklarar sitt svar med hjälp av en bild.', 'Hur förklarar eleven sitt svar?', ['Med en bild', 'Med en biljett', 'Med en sång'], 'Med en bild', 'school'],
+] as const;
+
+readingExercises.push(...Array.from({ length: 44 }, (_, index) => {
+  const template = readingTemplates[index % readingTemplates.length];
+  return {
+    id: 7 + index,
+    title: `Läsövning ${index + 7}`,
+    text: `${template[0]} Exempel ${index + 1}.`,
+    question: template[1],
+    options: [...template[2]],
+    answer: template[3],
+    difficulty: (['easy', 'medium', 'hard'] as const)[index % 3],
+    topic: template[4],
+  };
+}));
 
 export type WritingPrompt = { id: number; prompt: string; difficulty: Difficulty; topic: Topic };
 
@@ -50,6 +105,21 @@ export const writingPrompts: WritingPrompt[] = [
   { id: 6, prompt: 'Skriv ett kort meddelande till läraren och förklara varför du behöver mer tid för uppgiften.', difficulty: 'medium', topic: 'school' },
   { id: 7, prompt: 'Skriv vad du tycker att arbetsplatsen kan göra för att förbättra välmåendet.', difficulty: 'hard', topic: 'general' },
 ];
+
+const writingTemplates = [
+  ['Skriv ett kort meddelande om dagens tidtabell.', 'easy', 'general'],
+  ['Skriv ett meddelande till en elev om en läxa.', 'easy', 'school'],
+  ['Beskriv hur man löser en enkel uppgift steg för steg.', 'medium', 'school'],
+  ['Förklara hur man genomför en säker mätning.', 'medium', 'stem'],
+  ['Skriv en åsikt om en viktig fråga i vardagen.', 'hard', 'general'],
+  ['Jämför två sätt att lära sig nya saker.', 'hard', 'school'],
+  ['Beskriv ett experiment och diskutera möjliga felkällor.', 'hard', 'stem'],
+] as const;
+
+writingPrompts.push(...Array.from({ length: 43 }, (_, index) => {
+  const template = writingTemplates[index % writingTemplates.length];
+  return { id: 8 + index, prompt: `${template[0]} Tehtävä ${index + 8}.`, difficulty: template[1], topic: template[2] };
+}));
 
 export type SpeakingPrompt = { id: number; prompt: string; keywords: string[]; difficulty: Difficulty; topic: Topic };
 
@@ -72,3 +142,21 @@ export const speakingPrompts: SpeakingPrompt[] = [
   { id: 16, prompt: 'Käännä tämä lause ruotsiksi: Jos en ymmärrä ohjetta, pyydän opettajaa selittämään sen uudelleen.', keywords: ['förstår', 'instruktionen', 'ber', 'förklara'], difficulty: 'hard', topic: 'school' },
   { id: 17, prompt: 'Käännä tämä lause ruotsiksi: Oppilaiden pitäisi verrata tuloksia ja keskustella mahdollisista virhelähteistä.', keywords: ['eleverna', 'jämföra', 'resultaten', 'felkällor'], difficulty: 'hard', topic: 'stem' },
 ];
+
+const speakingTemplates = [
+  ['Käännä tämä lause ruotsiksi: Tänään on hyvä päivä.', ['idag', 'bra', 'dag'], 'easy', 'general'],
+  ['Käännä tämä lause ruotsiksi: Menen huomenna kouluun.', ['imorgon', 'skolan'], 'easy', 'school'],
+  ['Käännä tämä lause ruotsiksi: Voitko auttaa minua?', ['hjälpa', 'mig'], 'easy', 'general'],
+  ['Käännä tämä lause ruotsiksi: Oppilas lukee ohjeen huolellisesti.', ['eleven', 'läser', 'instruktionen'], 'medium', 'school'],
+  ['Käännä tämä lause ruotsiksi: Mittaamme veden lämpötilan.', ['mäter', 'vattnets', 'temperatur'], 'medium', 'stem'],
+  ['Käännä tämä lause ruotsiksi: Haluan varata ajan ensi viikolle.', ['boka', 'tid', 'nästa', 'vecka'], 'medium', 'general'],
+  ['Käännä tämä lause ruotsiksi: Tulosta pitää verrata aikaisempaan tulokseen.', ['resultatet', 'jämföras', 'tidigare'], 'hard', 'stem'],
+  ['Käännä tämä lause ruotsiksi: Opettaja pyytää oppilaita perustelemaan vastauksensa.', ['läraren', 'eleverna', 'motivera', 'svar'], 'hard', 'school'],
+  ['Käännä tämä lause ruotsiksi: Vaikka tehtävä oli vaikea, ryhmä löysi ratkaisun.', ['även', 'uppgiften', 'svår', 'lösning'], 'hard', 'school'],
+  ['Käännä tämä lause ruotsiksi: Jos mittaus epäonnistuu, tarkistamme laitteen.', ['mätningen', 'misslyckas', 'kontrollerar', 'apparaten'], 'hard', 'stem'],
+] as const;
+
+speakingPrompts.push(...Array.from({ length: 33 }, (_, index) => {
+  const template = speakingTemplates[index % speakingTemplates.length];
+  return { id: 18 + index, prompt: `${template[0]} Tehtävä ${index + 18}.`, keywords: [...template[1]], difficulty: template[2], topic: template[3] };
+}));
