@@ -21,6 +21,7 @@ export interface Exercise {
 }
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
+export type Topic = 'general' | 'school' | 'stem';
 
 export interface TeachingSubject {
     subjectName: string;

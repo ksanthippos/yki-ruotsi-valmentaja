@@ -4,13 +4,11 @@ import {
   listeningExercises,
   readingExercises,
   speakingPrompts,
-  speakingDifficulties,
   writingPrompts,
-  writingDifficulties,
 } from './data/learningMaterials';
 import { createEmptyProgress, getUserProgress, saveUserProgress } from './services/storage';
 import { assessReadiness } from './services/assessment';
-import { Difficulty, ProgressArea, UserProgress } from './types';
+import { Difficulty, ProgressArea, Topic, UserProgress } from './types';
 
 function normalize(text: string) {
   return text.trim().toLocaleLowerCase('fi-FI');
@@ -62,6 +60,12 @@ const difficultyLabels: Record<Difficulty, string> = {
   hard: 'Haastava',
 };
 
+const topicLabels: Record<Topic, string> = {
+  general: 'Yleinen ruotsi ja arki',
+  school: 'Koulumaailma',
+  stem: 'Matematiikka ja fysiikka',
+};
+
 export default function App() {
   const [wordIndex, setWordIndex] = useState(0);
   const [answer, setAnswer] = useState('');
@@ -74,6 +78,7 @@ export default function App() {
   const [isListening, setIsListening] = useState(false);
   const [speechError, setSpeechError] = useState('');
   const [difficulty, setDifficulty] = useState<Difficulty>('medium');
+  const [topic, setTopic] = useState<Topic>('general');
   const [backupMessage, setBackupMessage] = useState('');
   const importInputRef = useRef<HTMLInputElement | null>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
@@ -92,21 +97,21 @@ export default function App() {
   });
 
   const activeVocabularyOrder = vocabularyOrder.filter(
-    (index) => vocabulary[index].difficulty === difficulty,
+    (index) => vocabulary[index].difficulty === difficulty && vocabulary[index].topic === topic,
   );
   const activeListeningOrder = listeningOrder.filter(
-    (index) => listeningExercises[index].difficulty === difficulty,
+    (index) => listeningExercises[index].difficulty === difficulty && listeningExercises[index].topic === topic,
   );
   const activeReadingOrder = readingOrder.filter(
-    (index) => readingExercises[index].difficulty === difficulty,
+    (index) => readingExercises[index].difficulty === difficulty && readingExercises[index].topic === topic,
   );
   const activeWritingOrder = writingOrder.filter(
-    (index) => writingDifficulties[index] === difficulty,
+    (index) => writingPrompts[index].difficulty === difficulty && writingPrompts[index].topic === topic,
   );
   const activeSpeakingOrder = speakingOrder.filter(
-    (index) => speakingDifficulties[index] === difficulty,
+    (index) => speakingPrompts[index].difficulty === difficulty && speakingPrompts[index].topic === topic,
   );
-  const word = vocabulary[activeVocabularyOrder[wordIndex % activeVocabularyOrder.length]];
+  const word = vocabulary[activeVocabularyOrder[wordIndex % Math.max(activeVocabularyOrder.length, 1)]] ?? vocabulary[0];
   const score = progress.score;
   const todayPoints = progress.attempts
     .filter((attempt) => attempt.correct && isToday(attempt.completedAt))
@@ -223,6 +228,14 @@ export default function App() {
       const currentIndex = difficulties.indexOf(current);
       return difficulties[Math.max(0, Math.min(difficulties.length - 1, currentIndex + direction))];
     });
+    setExerciseIndex(0);
+    setWordIndex(0);
+    setFeedback('');
+    setResponse('');
+  }
+
+  function changeTopic(nextTopic: Topic) {
+    setTopic(nextTopic);
     setExerciseIndex(0);
     setWordIndex(0);
     setFeedback('');
@@ -385,10 +398,10 @@ export default function App() {
     }
   }
 
-  const listening = listeningExercises[activeListeningOrder[exerciseIndex % activeListeningOrder.length]];
-  const reading = readingExercises[activeReadingOrder[exerciseIndex % activeReadingOrder.length]];
-  const currentWritingIndex = activeWritingOrder[exerciseIndex % activeWritingOrder.length];
-  const currentSpeakingIndex = activeSpeakingOrder[exerciseIndex % activeSpeakingOrder.length];
+  const listening = listeningExercises[activeListeningOrder[exerciseIndex % Math.max(activeListeningOrder.length, 1)]] ?? listeningExercises[0];
+  const reading = readingExercises[activeReadingOrder[exerciseIndex % Math.max(activeReadingOrder.length, 1)]] ?? readingExercises[0];
+  const currentWritingIndex = activeWritingOrder[exerciseIndex % Math.max(activeWritingOrder.length, 1)] ?? 0;
+  const currentSpeakingIndex = activeSpeakingOrder[exerciseIndex % Math.max(activeSpeakingOrder.length, 1)] ?? 0;
 
   function renderExerciseOptions(
     options: string[],
@@ -416,6 +429,21 @@ export default function App() {
           <section className="card">
             <h2>Tämän päivän harjoittelu</h2>
             <p>Valitse valikosta osa-alue ja harjoittele 15 minuuttia. Lisäharjoitteluun <a href={vocabularySource.url} target="_blank" rel="noreferrer">Ylen YKI-materiaalia</a></p>
+            <div className="topic-picker">
+              <strong>Harjoittelun aihe</strong>
+              <div className="topic-options" role="group" aria-label="Valitse harjoittelun aihe">
+                {(Object.keys(topicLabels) as Topic[]).map((option) => (
+                  <button
+                    key={option}
+                    className={topic === option ? 'topic-option active' : 'topic-option'}
+                    onClick={() => changeTopic(option)}
+                    aria-pressed={topic === option}
+                  >
+                    {topicLabels[option]}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             <div className="daily-score" aria-label={`Tänään saadut pisteet: ${todayPoints}`}>
               <div className="area-header">
@@ -490,11 +518,32 @@ export default function App() {
       );
     }
 
+    const activeCount = section === 'vocabulary'
+      ? activeVocabularyOrder.length
+      : section === 'listening'
+        ? activeListeningOrder.length
+        : section === 'reading'
+          ? activeReadingOrder.length
+          : section === 'writing'
+            ? activeWritingOrder.length
+            : activeSpeakingOrder.length;
+
+    if (activeCount === 0) {
+      return (
+        <section className="card empty-state">
+          <h2>Ei tehtäviä tällä valinnalla</h2>
+          <p>Vaihda aihetta tai vaikeustasoa nähdäksesi sopivia tehtäviä.</p>
+          {renderDifficultyControl()}
+        </section>
+      );
+    }
+
     if (section === 'vocabulary') {
       return (
         <section className="card">
           <div className="area-header"><span>{word.category}</span><strong>Pisteet: {score}</strong></div>
           <p>Sana {wordIndex + 1} / {activeVocabularyOrder.length}</p>
+          <p className="topic-tag">{topicLabels[word.topic]}</p>
           <h2>{word.swedish}</h2>
           <p><em>{word.example}</em></p>
           <label htmlFor="answer">Mitä sana tarkoittaa suomeksi?</label>
@@ -511,6 +560,7 @@ export default function App() {
         <section className="card">
           <div className="area-header"><span>Kuuntelu {listening.id}</span><strong>Pisteet: {score}</strong></div>
           <h2>Kuuntele ja ymmärrä</h2>
+          <p className="topic-tag">{topicLabels[listening.topic]}</p>
           <p className="difficulty">Vaikeustaso: {listening.difficulty === 'easy' ? 'Perustaso' : listening.difficulty === 'medium' ? 'Keskitaso' : 'Haastava'}</p>
           <button onClick={() => speak(listening.text)}>🔊 Kuuntele ruotsiksi</button>
           <button
@@ -540,6 +590,7 @@ export default function App() {
         <section className="card">
           <div className="area-header"><span>Lukeminen {reading.id}</span><strong>Pisteet: {score}</strong></div>
           <h2>{reading.title}</h2>
+          <p className="topic-tag">{topicLabels[reading.topic]}</p>
           <p className="difficulty">Vaikeustaso: {reading.difficulty === 'easy' ? 'Perustaso' : reading.difficulty === 'medium' ? 'Keskitaso' : 'Haastava'}</p>
           <p className="reading-text">{reading.text}</p>
           <p>{reading.question}</p>
@@ -555,16 +606,14 @@ export default function App() {
     const prompt = section === 'writing'
       ? writingPrompts[currentWritingIndex]
       : speakingPrompts[currentSpeakingIndex].prompt;
-    const currentDifficulty = section === 'writing'
-      ? writingDifficulties[currentWritingIndex]
-      : speakingDifficulties[currentSpeakingIndex];
     const activePromptOrder = section === 'writing' ? activeWritingOrder : activeSpeakingOrder;
     return (
       <section className="card">
         <div className="area-header"><span>{section === 'writing' ? 'Kirjoittaminen' : 'Puhuminen'}</span><strong>Pisteet: {score}</strong></div>
         <h2>{section === 'writing' ? 'Kirjoitustehtävä' : 'Puhumistehtävä'}</h2>
-        <p>{prompt}</p>
-        <p className="difficulty">Vaikeustaso: {currentDifficulty === 'easy' ? 'Perustaso' : currentDifficulty === 'medium' ? 'Keskitaso' : 'Haastava'}</p>
+        <p>{typeof prompt === 'string' ? prompt : prompt.prompt}</p>
+        <p className="topic-tag">{topicLabels[section === 'writing' ? writingPrompts[currentWritingIndex].topic : speakingPrompts[currentSpeakingIndex].topic]}</p>
+        <p className="difficulty">Vaikeustaso: {difficultyLabels[section === 'writing' ? writingPrompts[currentWritingIndex].difficulty : speakingPrompts[currentSpeakingIndex].difficulty]}</p>
         <textarea
           value={response}
           onChange={(event) => setResponse(event.target.value)}

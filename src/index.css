@@ -211,6 +211,17 @@ textarea {
   font-weight: 700;
 }
 
+.topic-tag {
+  display: inline-block;
+  margin: 0 0 8px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  color: #38545a;
+  background: #e7efec;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
 .difficulty-control {
   display: flex;
   align-items: center;
@@ -272,6 +283,45 @@ textarea {
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 20px;
+}
+
+.topic-picker {
+  margin-top: 20px;
+}
+
+.topic-picker > strong {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.topic-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.topic-option {
+  min-height: 54px;
+  padding: 10px;
+  color: #24313b;
+  background: #e7efec;
+  font-size: 0.9rem;
+}
+
+.topic-option.active,
+.topic-option.active:hover {
+  color: #fff;
+  background: #47727a;
+}
+
+.empty-state {
+  text-align: center;
+}
+
+@media (max-width: 520px) {
+  .topic-options {
+    grid-template-columns: 1fr;
+  }
 }
 
 .visually-hidden {
