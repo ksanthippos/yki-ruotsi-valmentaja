@@ -318,6 +318,11 @@ export default function App() {
     setDictionaryMessage(result ? '' : 'Sanaa ei löytynyt tämänhetkisestä sanastosta.');
   }
 
+  function translateDictionaryQuery() {
+    searchDictionary();
+    setDictionaryQuery('');
+  }
+
   function toggleDictionaryDirection() {
     setDictionaryDirection((current) => current === 'fi-sv' ? 'sv-fi' : 'fi-sv');
     setDictionaryResult(null);
@@ -546,13 +551,13 @@ export default function App() {
             <input
               value={dictionaryQuery}
               onChange={(event) => setDictionaryQuery(event.target.value)}
-              onKeyDown={(event) => { if (event.key === 'Enter') searchDictionary(); }}
+              onKeyDown={(event) => { if (event.key === 'Enter') translateDictionaryQuery(); }}
               placeholder={dictionaryDirection === 'fi-sv' ? 'Kirjoita sana suomeksi' : 'Kirjoita sana ruotsiksi'}
               aria-label="Haettava sana"
               autoFocus
             />
             <button onClick={startDictionarySpeech} aria-label="Sanele haettava sana">🎙️</button>
-            <button onClick={() => searchDictionary()}>Käännä</button>
+            <button onClick={translateDictionaryQuery}>Käännä</button>
           </div>
           {dictionaryResult && (
             <div className="dictionary-result">
