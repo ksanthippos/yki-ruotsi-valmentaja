@@ -34,6 +34,7 @@ export interface ExerciseAttempt {
     area: ProgressArea;
     id: string;
     correct: boolean;
+    points: number;
     completedAt: string;
 }
 

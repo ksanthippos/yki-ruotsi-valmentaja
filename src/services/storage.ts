@@ -41,7 +41,10 @@ export const getUserProgress = (): UserProgress | null => {
         return {
             score: typeof parsed.score === 'number' ? parsed.score : 0,
             completed,
-            attempts: Array.isArray(parsed.attempts) ? parsed.attempts : [],
+            attempts: Array.isArray(parsed.attempts) ? parsed.attempts.map((attempt) => ({
+                ...attempt,
+                points: typeof attempt.points === 'number' ? attempt.points : attempt.correct ? 10 : 0,
+            })) : [],
         };
     } catch {
         return null;

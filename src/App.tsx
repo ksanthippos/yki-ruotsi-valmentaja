@@ -24,6 +24,7 @@ function isToday(date: string) {
 }
 
 type Section = 'home' | 'vocabulary' | 'listening' | 'reading' | 'writing' | 'speaking';
+type PrimaryView = 'home' | 'practice' | 'history' | 'dictionary';
 
 const menuItems: { id: Section; label: string }[] = [
   { id: 'home', label: 'Etusivu' },
@@ -72,6 +73,7 @@ export default function App() {
   const [answer, setAnswer] = useState('');
   const [feedback, setFeedback] = useState('');
   const [section, setSection] = useState<Section>('home');
+  const [primaryView, setPrimaryView] = useState<PrimaryView>('home');
   const [exerciseIndex, setExerciseIndex] = useState(0);
   const [showListeningText, setShowListeningText] = useState(false);
   const [showAttemptHistory, setShowAttemptHistory] = useState(false);
@@ -116,7 +118,7 @@ export default function App() {
   const score = progress.score;
   const todayPoints = progress.attempts
     .filter((attempt) => attempt.correct && isToday(attempt.completedAt))
-    .reduce((total, attempt) => total + (attempt.area === 'speaking' || attempt.area === 'writing' ? 5 : 10), 0);
+    .reduce((total, attempt) => total + attempt.points, 0);
   const dailyGoal = 50;
   const readiness = assessReadiness(progress, areaTotals);
 
@@ -188,8 +190,9 @@ export default function App() {
     setProgress((current) => {
       const completed = current.completed[area];
       const alreadyCompleted = completed.includes(id);
+      const awardedPoints = alreadyCompleted ? 0 : points;
       return {
-        score: current.score + (alreadyCompleted ? 0 : points),
+        score: current.score + awardedPoints,
         completed: alreadyCompleted
           ? current.completed
           : { ...current.completed, [area]: [...completed, id] },
@@ -199,6 +202,7 @@ export default function App() {
             area,
             id,
             correct: points > 0,
+            points: awardedPoints,
             completedAt: new Date().toISOString(),
           },
         ],
@@ -274,6 +278,7 @@ export default function App() {
     recognitionRef.current?.abort();
     setIsListening(false);
     setSection(nextSection);
+    setPrimaryView(nextSection === 'home' ? 'home' : 'practice');
     setExerciseIndex(0);
     setAnswer('');
     setFeedback('');
@@ -285,6 +290,12 @@ export default function App() {
     if (nextSection === 'reading') setReadingOrder(shuffled(readingExercises.map((_, index) => index)));
     if (nextSection === 'writing') setWritingOrder(shuffled(writingPrompts.map((_, index) => index)));
     if (nextSection === 'speaking') setSpeakingOrder(shuffled(speakingPrompts.map((_, index) => index)));
+  }
+
+  function selectPrimaryView(view: PrimaryView) {
+    setPrimaryView(view);
+    if (view === 'home') setSection('home');
+    if (view === 'practice' && section === 'home') setSection('vocabulary');
   }
 
   function toggleSpeechRecognition() {
@@ -423,7 +434,57 @@ export default function App() {
     );
   }
 
+  function attemptTitle(attempt: UserProgress['attempts'][number]) {
+    if (attempt.area === 'vocabulary') return vocabulary.find((item) => item.swedish === attempt.id)?.swedish ?? attempt.id;
+    if (attempt.area === 'listening') return listeningExercises.find((item) => String(item.id) === attempt.id)?.question ?? `Tehtävä ${attempt.id}`;
+    if (attempt.area === 'reading') return readingExercises.find((item) => String(item.id) === attempt.id)?.title ?? `Tehtävä ${attempt.id}`;
+    if (attempt.area === 'writing') return writingPrompts[Number(attempt.id)]?.prompt ?? `Tehtävä ${attempt.id}`;
+    return speakingPrompts.find((item) => String(item.id) === attempt.id)?.prompt ?? `Tehtävä ${attempt.id}`;
+  }
+
+  function renderHistory() {
+    return (
+      <section className="card history-view">
+        <div className="area-header">
+          <span>Harjoitushistoria</span>
+          <strong>{progress.attempts.length} suoritusta</strong>
+        </div>
+        {progress.attempts.length === 0 ? (
+          <p>Tehdyt tehtävät näkyvät tässä.</p>
+        ) : (
+          <div className="history-list">
+            {[...progress.attempts].reverse().map((attempt, index) => (
+              <article className="history-item" key={`${attempt.completedAt}-${index}`}>
+                <div>
+                  <strong>{areaLabels[attempt.area]}</strong>
+                  <p>{attemptTitle(attempt)}</p>
+                </div>
+                <div className="history-result">
+                  <strong>{attempt.points} p</strong>
+                  <span>{new Date(attempt.completedAt).toLocaleString('fi-FI')}</span>
+                  <span className={attempt.correct ? 'correct' : 'incorrect'}>
+                    {attempt.correct ? 'Oikein' : 'Harjoiteltu'}
+                  </span>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+    );
+  }
+
   function renderSection() {
+    if (primaryView === 'history') return renderHistory();
+    if (primaryView === 'dictionary') {
+      return (
+        <section className="card dictionary-placeholder">
+          <h2>Sanakirja</h2>
+          <p>Sanakirjatoiminto tulee tähän näkymään myöhemmin.</p>
+        </section>
+      );
+    }
+
     if (section === 'home') {
       return (
         <>
@@ -467,36 +528,6 @@ export default function App() {
               />
             </div>
             {backupMessage && <p className="hint" role="status">{backupMessage}</p>}
-          </section>
-          <section className="card practice-summary">
-            <div className="area-header">
-              <span>Harjoittelun yhteenveto</span>
-              <strong>{score} pistettä</strong>
-            </div>
-            <p>Harjoituskertoja: {progress.attempts.length}</p>
-            {progress.attempts.length > 0 ? (
-              <>
-                <button
-                  className="secondary history-toggle"
-                  onClick={() => setShowAttemptHistory((current) => !current)}
-                  aria-expanded={showAttemptHistory}
-                  aria-controls="attempt-history"
-                >
-                  {showAttemptHistory ? 'Piilota harjoitushistoria' : 'Näytä harjoitushistoria'}
-                </button>
-                {showAttemptHistory && (
-                  <ul id="attempt-history">
-                    {progress.attempts.slice(-5).reverse().map((attempt, index) => (
-                      <li key={`${attempt.completedAt}-${index}`}>
-                        {areaLabels[attempt.area]}: {attempt.correct ? 'oikein' : 'harjoiteltu'}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </>
-            ) : (
-              <p>Vastaushistoriasi näkyy tässä, kun aloitat harjoittelun.</p>
-            )}
           </section>
           <section className="card readiness-card">
             <div className="area-header">
@@ -654,14 +685,34 @@ export default function App() {
         
       
       </header>
-      <nav className="menu" aria-label="Harjoitusosiot">
-        {menuItems.map((item) => (
-          <button className={section === item.id ? 'menu-item active' : 'menu-item'} key={item.id} onClick={() => selectSection(item.id)}>
-            {item.label}
-          </button>
-        ))}
-      </nav>
+      {primaryView === 'practice' && (
+        <nav className="menu" aria-label="Harjoitusosiot">
+          {menuItems.slice(1).map((item) => (
+            <button className={section === item.id ? 'menu-item active' : 'menu-item'} key={item.id} onClick={() => selectSection(item.id)}>
+              {item.label}
+            </button>
+          ))}
+        </nav>
+      )}
       {renderSection()}
+      <nav className="bottom-nav" aria-label="Päänäkymät">
+        <button className={primaryView === 'home' ? 'bottom-nav-item active' : 'bottom-nav-item'} onClick={() => selectPrimaryView('home')}>
+          <span aria-hidden="true">⌂</span>
+          <span>Koti</span>
+        </button>
+        <button className={primaryView === 'practice' ? 'bottom-nav-item active' : 'bottom-nav-item'} onClick={() => selectPrimaryView('practice')}>
+          <span aria-hidden="true">✓</span>
+          <span>Harjoitukset</span>
+        </button>
+        <button className={primaryView === 'history' ? 'bottom-nav-item active' : 'bottom-nav-item'} onClick={() => selectPrimaryView('history')}>
+          <span aria-hidden="true">▤</span>
+          <span>Historia</span>
+        </button>
+        <button className={primaryView === 'dictionary' ? 'bottom-nav-item active' : 'bottom-nav-item'} onClick={() => selectPrimaryView('dictionary')}>
+          <span aria-hidden="true">Aa</span>
+          <span>Sanakirja</span>
+        </button>
+      </nav>
     </main>
   );
 }
