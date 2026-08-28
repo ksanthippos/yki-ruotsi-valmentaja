@@ -370,6 +370,42 @@ textarea {
   min-height: 220px;
 }
 
+.dictionary-direction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 24px 0 14px;
+  font-weight: 700;
+}
+
+.dictionary-direction button {
+  min-width: 44px;
+  padding: 8px 12px;
+}
+
+.dictionary-input-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: end;
+}
+
+.dictionary-input-row input {
+  margin: 0;
+}
+
+.dictionary-result {
+  margin-top: 20px;
+  padding: 18px;
+  border-left: 4px solid #e2a15e;
+  background: #edf4f0;
+}
+
+.dictionary-result h2 {
+  margin: 2px 0 12px;
+}
+
 .history-toggle {
   margin-top: 4px;
 }
@@ -421,6 +457,14 @@ textarea {
 
   .history-item {
     flex-direction: column;
+  }
+
+  .dictionary-input-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .dictionary-input-row button:last-child {
+    grid-column: 1 / -1;
   }
 
   .history-result {

@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { vocabulary, vocabularySource } from './data/vocabulary';
+import { vocabulary, vocabularySource, VocabularyItem } from './data/vocabulary';
 import {
   listeningExercises,
   readingExercises,
@@ -25,6 +25,7 @@ function isToday(date: string) {
 
 type Section = 'home' | 'vocabulary' | 'listening' | 'reading' | 'writing' | 'speaking';
 type PrimaryView = 'home' | 'practice' | 'history' | 'dictionary';
+type DictionaryDirection = 'fi-sv' | 'sv-fi';
 
 const menuItems: { id: Section; label: string }[] = [
   { id: 'home', label: 'Etusivu' },
@@ -82,6 +83,10 @@ export default function App() {
   const [speechError, setSpeechError] = useState('');
   const [difficulty, setDifficulty] = useState<Difficulty>('medium');
   const [topic, setTopic] = useState<Topic>('general');
+  const [dictionaryQuery, setDictionaryQuery] = useState('');
+  const [dictionaryDirection, setDictionaryDirection] = useState<DictionaryDirection>('fi-sv');
+  const [dictionaryResult, setDictionaryResult] = useState<VocabularyItem | null>(null);
+  const [dictionaryMessage, setDictionaryMessage] = useState('');
   const [backupMessage, setBackupMessage] = useState('');
   const importInputRef = useRef<HTMLInputElement | null>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
@@ -298,6 +303,55 @@ export default function App() {
     if (view === 'practice' && section === 'home') setSection('vocabulary');
   }
 
+  function searchDictionary(queryOverride?: string) {
+    const query = normalize(queryOverride ?? dictionaryQuery);
+    if (!query) {
+      setDictionaryResult(null);
+      setDictionaryMessage('Kirjoita ensin sana, jonka haluat kääntää.');
+      return;
+    }
+
+    const result = vocabulary.find((item) => normalize(
+      dictionaryDirection === 'fi-sv' ? item.finnish : item.swedish,
+    ) === query);
+    setDictionaryResult(result ?? null);
+    setDictionaryMessage(result ? '' : 'Sanaa ei löytynyt tämänhetkisestä sanastosta.');
+  }
+
+  function toggleDictionaryDirection() {
+    setDictionaryDirection((current) => current === 'fi-sv' ? 'sv-fi' : 'fi-sv');
+    setDictionaryResult(null);
+    setDictionaryMessage('');
+  }
+
+  function startDictionarySpeech() {
+    const Recognition = window.SpeechRecognition ?? window.webkitSpeechRecognition;
+    if (!Recognition) {
+      setDictionaryMessage('Tämä selain ei tue puheentunnistusta. Kirjoita sana kenttään.');
+      return;
+    }
+
+    const recognition = new Recognition();
+    recognition.lang = dictionaryDirection === 'fi-sv' ? 'fi-FI' : 'sv-SE';
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    recognition.onresult = (event) => {
+      const transcript = Array.from({ length: event.results.length }, (_, index) => (
+        event.results[index]?.[0]?.transcript ?? ''
+      )).join(' ').trim();
+      setDictionaryQuery(transcript);
+      if (event.results[event.results.length - 1]?.isFinal) {
+        searchDictionary(transcript);
+      }
+    };
+    recognition.onerror = () => setDictionaryMessage('Puheentunnistus ei onnistunut. Kirjoita sana kenttään.');
+    try {
+      recognition.start();
+    } catch {
+      setDictionaryMessage('Puheentunnistusta ei voitu käynnistää. Yritä uudelleen.');
+    }
+  }
+
   function toggleSpeechRecognition() {
     if (isListening) {
       recognitionRef.current?.stop();
@@ -478,9 +532,40 @@ export default function App() {
     if (primaryView === 'history') return renderHistory();
     if (primaryView === 'dictionary') {
       return (
-        <section className="card dictionary-placeholder">
-          <h2>Sanakirja</h2>
-          <p>Sanakirjatoiminto tulee tähän näkymään myöhemmin.</p>
+        <section className="card dictionary-view">
+          <div className="area-header">
+            <span>Sanakirja</span>
+            <strong>{dictionaryDirection === 'fi-sv' ? 'Suomi → ruotsi' : 'Ruotsi → suomi'}</strong>
+          </div>
+          <div className="dictionary-direction">
+            <span>{dictionaryDirection === 'fi-sv' ? 'Suomi' : 'Ruotsi'}</span>
+            <button className="secondary" onClick={toggleDictionaryDirection} aria-label="Vaihda käännössuunta">⇄</button>
+            <span>{dictionaryDirection === 'fi-sv' ? 'Ruotsi' : 'Suomi'}</span>
+          </div>
+          <div className="dictionary-input-row">
+            <input
+              value={dictionaryQuery}
+              onChange={(event) => setDictionaryQuery(event.target.value)}
+              onKeyDown={(event) => { if (event.key === 'Enter') searchDictionary(); }}
+              placeholder={dictionaryDirection === 'fi-sv' ? 'Kirjoita sana suomeksi' : 'Kirjoita sana ruotsiksi'}
+              aria-label="Haettava sana"
+              autoFocus
+            />
+            <button onClick={startDictionarySpeech} aria-label="Sanele haettava sana">🎙️</button>
+            <button onClick={() => searchDictionary()}>Käännä</button>
+          </div>
+          {dictionaryResult && (
+            <div className="dictionary-result">
+              <p className="hint">{dictionaryDirection === 'fi-sv' ? dictionaryResult.finnish : dictionaryResult.swedish}</p>
+              <h2>{dictionaryDirection === 'fi-sv' ? dictionaryResult.swedish : dictionaryResult.finnish}</h2>
+              {dictionaryDirection === 'fi-sv' && (
+                <button className="secondary" onClick={() => speak(dictionaryResult.swedish)}>🔊 Kuuntele ruotsiksi</button>
+              )}
+              <p><em>{dictionaryResult.example}</em></p>
+            </div>
+          )}
+          {dictionaryMessage && <p className="hint" role="status">{dictionaryMessage}</p>}
+          <p className="hint">Sanakirja hakee tällä hetkellä sovelluksen omasta harjoitussanastosta.</p>
         </section>
       );
     }
