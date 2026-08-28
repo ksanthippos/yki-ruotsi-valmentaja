@@ -9,6 +9,7 @@ import {
 import { createEmptyProgress, getUserProgress, saveUserProgress } from './services/storage';
 import { assessReadiness } from './services/assessment';
 import { Difficulty, ProgressArea, Topic, UserProgress } from './types';
+import { APP_VERSION } from './version';
 
 function normalize(text: string) {
   return text.trim().toLocaleLowerCase('fi-FI');
@@ -647,6 +648,7 @@ export default function App() {
   return (
     <main className="app">
       <header>
+        <p className="app-version">Versio {APP_VERSION}</p>
         <p className="eyebrow"></p>
         <h1>YKI-valmentaja</h1>
         

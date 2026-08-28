@@ -24,6 +24,14 @@ body {
   padding: 48px 24px 64px;
 }
 
+.app-version {
+  margin: 0 0 8px;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
 .eyebrow {
   margin: 0 0 8px;
   color: #c15b3d;

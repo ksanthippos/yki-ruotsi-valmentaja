@@ -29,6 +29,17 @@ YKI Ruotsi Valmentaja on Progressive Web App (PWA), joka auttaa käyttäjiä val
 
 4. **Avaa selain** ja siirry osoitteeseen `http://localhost:3000` (tai muu määritetty portti).
 
+## Versiointi
+
+Sovelluksen versionumero löytyy tiedostosta `src/version.ts` ja näkyy etusivun
+yläreunassa. Päivitä sitä jokaisessa julkaistavassa commitissa yhdellä
+sadasosalla ja käytä commit-viestissä samaa numeroa, esimerkiksi:
+
+```text
+v0.01: Lisää ominaisuus
+v0.02: Korjaa virhe
+```
+
 ## Julkaisu GitHub Pagesiin
 
 Projekti julkaistaan automaattisesti GitHub Pagesiin, kun muutokset pushataan
@@ -40,6 +51,7 @@ Projekti julkaistaan automaattisesti GitHub Pagesiin, kun muutokset pushataan
 Julkaisun jälkeen sovellus löytyy osoitteesta
 `https://<käyttäjänimi>.github.io/yki-ruotsi-valmentaja/`. PWA:n voi asentaa
 mobiiliselaimesta tällä HTTPS-osoitteella.
+
 
 ## Käyttöohjeet
 
