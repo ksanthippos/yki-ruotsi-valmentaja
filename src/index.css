@@ -284,7 +284,12 @@ textarea {
 }
 
 .next-button {
+  margin-top: 16px;
   margin-left: 10px;
+}
+
+textarea ~ button {
+  margin-top: 16px;
 }
 
 .reading-text {

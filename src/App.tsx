@@ -742,7 +742,7 @@ export default function App() {
           <p>{listening.question}</p>
           {renderExerciseOptions(listening.options, listening.answer)}
           {feedback && <p><strong>{feedback}</strong></p>}
-          <button className="secondary" onClick={() => nextExercise(activeListeningOrder.length)}>Seuraava harjoitus</button>
+          <button className="secondary next-button" onClick={() => nextExercise(activeListeningOrder.length)}>Seuraava harjoitus</button>
           {renderDifficultyControl()}
         </section>
       );
@@ -759,7 +759,7 @@ export default function App() {
           <p>{reading.question}</p>
           {renderExerciseOptions(reading.options, reading.answer)}
           {feedback && <p><strong>{feedback}</strong></p>}
-          <button className="secondary" onClick={() => nextExercise(activeReadingOrder.length)}>Seuraava harjoitus</button>
+          <button className="secondary next-button" onClick={() => nextExercise(activeReadingOrder.length)}>Seuraava harjoitus</button>
           {renderDifficultyControl()}
         </section>
       );
