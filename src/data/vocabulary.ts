@@ -67,6 +67,19 @@ const additionalVocabulary: VocabularyItem[] = [
 
 vocabulary.push(...additionalVocabulary);
 
+vocabulary.push(
+    { swedish: 'att förstå', finnish: 'ymmärtää', example: 'Jag försöker förstå instruktionen.', category: 'Yleinen ruotsi ja arki', difficulty: 'easy', topic: 'general' },
+    { swedish: 'en fråga', finnish: 'kysymys', example: 'Jag har en fråga.', category: 'Yleinen ruotsi ja arki', difficulty: 'easy', topic: 'general' },
+    { swedish: 'att läsa', finnish: 'lukea', example: 'Eleverna läser texten tillsammans.', category: 'Koulumaailma', difficulty: 'easy', topic: 'school' },
+    { swedish: 'ett svar', finnish: 'vastaus', example: 'Skriv ditt svar i häftet.', category: 'Koulumaailma', difficulty: 'easy', topic: 'school' },
+    { swedish: 'en omkrets', finnish: 'piiri', example: 'Räkna ut figurens omkrets.', category: 'Matematiikka ja fysiikka', difficulty: 'medium', topic: 'stem' },
+    { swedish: 'en sannolikhet', finnish: 'todennäköisyys', example: 'Vi beräknar sannolikheten.', category: 'Matematiikka ja fysiikka', difficulty: 'medium', topic: 'stem' },
+    { swedish: 'att beskriva', finnish: 'kuvailla', example: 'Beskriv vad du ser i bilden.', category: 'Koulumaailma', difficulty: 'medium', topic: 'school' },
+    { swedish: 'en förklaring', finnish: 'selitys', example: 'Din förklaring är tydlig.', category: 'Koulumaailma', difficulty: 'medium', topic: 'school' },
+    { swedish: 'en slutsats', finnish: 'johtopäätös', example: 'Dra en slutsats av resultaten.', category: 'Matematiikka ja fysiikka', difficulty: 'hard', topic: 'stem' },
+    { swedish: 'ett samband', finnish: 'yhteys', example: 'Undersök sambandet mellan tid och hastighet.', category: 'Matematiikka ja fysiikka', difficulty: 'hard', topic: 'stem' },
+);
+
 export const vocabularySource = {
     title: 'Ylen materiaali',
     url: 'https://yle.fi/a/20-146198',

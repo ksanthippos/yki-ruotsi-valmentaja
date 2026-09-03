@@ -57,6 +57,19 @@ listeningExercises.push(...Array.from({ length: 44 }, (_, index) => {
   };
 }));
 
+listeningExercises.push(
+  { id: 51, text: 'Bussen är försenad eftersom det har varit en olycka på vägen.', question: 'Varför är bussen försenad?', options: ['På grund av en olycka', 'På grund av snö', 'På grund av ett möte'], answer: 'På grund av en olycka', difficulty: 'easy', topic: 'general' },
+  { id: 52, text: 'Ta med en penna och ditt häfte till lektionen.', question: 'Vad ska eleven ta med?', options: ['En penna och ett häfte', 'En dator och en karta', 'En biljett och ett pass'], answer: 'En penna och ett häfte', difficulty: 'easy', topic: 'school' },
+  { id: 53, text: 'Vi träffas utanför biblioteket klockan tre.', question: 'Var träffas personerna?', options: ['Utanför biblioteket', 'I klassrummet', 'På stationen'], answer: 'Utanför biblioteket', difficulty: 'easy', topic: 'school' },
+  { id: 54, text: 'Läkaren rekommenderar att patienten vilar och dricker mycket vatten.', question: 'Vad rekommenderar läkaren?', options: ['Att vila och dricka vatten', 'Att börja träna hårt', 'Att byta bostad'], answer: 'Att vila och dricka vatten', difficulty: 'medium', topic: 'general' },
+  { id: 55, text: 'Eleverna ska först läsa uppgiften och sedan diskutera svaret i gruppen.', question: 'Vad ska eleverna göra först?', options: ['Läsa uppgiften', 'Skriva ett prov', 'Gå till biblioteket'], answer: 'Läsa uppgiften', difficulty: 'medium', topic: 'school' },
+  { id: 56, text: 'För att beräkna hastigheten delar vi sträckan med tiden.', question: 'Hur beräknar man hastigheten?', options: ['Genom att dela sträckan med tiden', 'Genom att multiplicera tiden med massan', 'Genom att mäta temperaturen'], answer: 'Genom att dela sträckan med tiden', difficulty: 'medium', topic: 'stem' },
+  { id: 57, text: 'Mötet flyttas till nästa vecka eftersom flera deltagare är sjuka.', question: 'Varför flyttas mötet?', options: ['Flera deltagare är sjuka', 'Rummet är för stort', 'Det är helg'], answer: 'Flera deltagare är sjuka', difficulty: 'medium', topic: 'general' },
+  { id: 58, text: 'Resultaten visar en tydlig skillnad mellan materialen, men mätningen måste upprepas.', question: 'Vad måste göras trots skillnaden?', options: ['Mätningen måste upprepas', 'Materialen måste kastas bort', 'Lektionen måste avslutas'], answer: 'Mätningen måste upprepas', difficulty: 'hard', topic: 'stem' },
+  { id: 59, text: 'Läraren vill att eleverna motiverar sitt svar med ett exempel från texten.', question: 'Hur ska eleverna motivera svaret?', options: ['Med ett exempel från texten', 'Med en bild från hemmet', 'Utan motivering'], answer: 'Med ett exempel från texten', difficulty: 'hard', topic: 'school' },
+  { id: 60, text: 'Om temperaturen fortsätter att sjunka kan vattnet frysa under natten.', question: 'Vad kan hända om temperaturen sjunker?', options: ['Vattnet kan frysa', 'Vattnet börjar koka', 'Tiden försvinner'], answer: 'Vattnet kan frysa', difficulty: 'hard', topic: 'stem' },
+);
+
 export const readingExercises: ReadingExercise[] = [
   { id: 1, title: 'En laboration i fysik', text: 'Eleverna mäter temperaturen på vattnet. De skriver resultaten i en tabell och jämför dem med sin hypotes.', question: 'Vad gör eleverna med resultaten?', options: ['De skriver dem i en tabell', 'De kastar bort dem', 'De ritar en karta'], answer: 'De skriver dem i en tabell', difficulty: 'easy', topic: 'stem' },
   { id: 2, title: 'Samarbete i klassrummet', text: 'Eleverna arbetar i par. Den ena löser uppgiften och den andra ställer frågor. Sedan byter de roller.', question: 'Hur arbetar eleverna?', options: ['Ensamma', 'I par och med olika roller', 'Bara hemma'], answer: 'I par och med olika roller', difficulty: 'medium', topic: 'school' },
@@ -94,6 +107,19 @@ readingExercises.push(...Array.from({ length: 44 }, (_, index) => {
   };
 }));
 
+readingExercises.push(
+  { id: 51, title: 'En ny busstid', text: 'Bussen går nu fem minuter tidigare än förut. Resenärerna behöver därför komma till hållplatsen ajoissa.', question: 'Hur har busstidtabellen förändrats?', options: ['Bussen går tidigare', 'Bussen går senare', 'Bussen har slutat gå'], answer: 'Bussen går tidigare', difficulty: 'easy', topic: 'general' },
+  { id: 52, title: 'En läsläxa', text: 'Läraren ber eleverna läsa två sidor hemma och skriva ner ett nytt ord från texten.', question: 'Vad ska eleverna göra hemma?', options: ['Läsa två sidor och skriva ner ett ord', 'Rita en bild av skolan', 'Göra ett experiment'], answer: 'Läsa två sidor och skriva ner ett ord', difficulty: 'easy', topic: 'school' },
+  { id: 53, title: 'På apoteket', text: 'Kunden frågar efter medicin mot huvudvärk. Apotekaren rekommenderar också att kunden dricker vatten.', question: 'Vad frågar kunden efter?', options: ['Medicin mot huvudvärk', 'En ny läkartid', 'En bussbiljett'], answer: 'Medicin mot huvudvärk', difficulty: 'easy', topic: 'general' },
+  { id: 54, title: 'Grupparbete', text: 'Varje grupp får ett eget ämne. Eleverna delar upp arbetet och bestämmer vem som presenterar resultatet.', question: 'Vad gör eleverna först?', options: ['Delar upp arbetet', 'Går hem', 'Skriver ett prov'], answer: 'Delar upp arbetet', difficulty: 'medium', topic: 'school' },
+  { id: 55, title: 'Energiförbrukning', text: 'Familjen jämför energiförbrukningen under två månader. Den andra månaden använde de mindre el eftersom de släckte lamporna oftare.', question: 'Varför använde familjen mindre el?', options: ['De släckte lamporna oftare', 'De köpte en större bostad', 'De reste bort'], answer: 'De släckte lamporna oftare', difficulty: 'medium', topic: 'stem' },
+  { id: 56, title: 'Ett läkarbesök', text: 'Patienten har haft hosta i flera dagar. Läkaren undersöker patienten och föreslår att hen stannar hemma från arbetet en dag.', question: 'Vad föreslår läkaren?', options: ['Att patienten stannar hemma en dag', 'Att patienten byter arbete', 'Att patienten börjar studera'], answer: 'Att patienten stannar hemma en dag', difficulty: 'medium', topic: 'general' },
+  { id: 57, title: 'En geometrisk figur', text: 'En rektangel har längden sex centimeter och bredden fyra centimeter. För att bestämma arean multiplicerar man längden med bredden.', question: 'Hur bestämmer man rektangelns area?', options: ['Genom att multiplicera längden med bredden', 'Genom att addera bara längden', 'Genom att dela bredden med tiden'], answer: 'Genom att multiplicera längden med bredden', difficulty: 'medium', topic: 'stem' },
+  { id: 58, title: 'En förändrad plan', text: 'Skolan planerade en utflykt på tisdag, men väderprognosen lovar kraftigt regn. Utflykten flyttas därför till torsdag, om vädret förbättras.', question: 'Varför flyttas utflykten?', options: ['På grund av väderprognosen', 'På grund av ett prov', 'På grund av biblioteket'], answer: 'På grund av väderprognosen', difficulty: 'hard', topic: 'school' },
+  { id: 59, title: 'Experimentets resultat', text: 'Hypotesen stämde inte med resultatet. Eleverna analyserar möjliga felkällor innan de drar en slutsats.', question: 'Vad gör eleverna innan de drar en slutsats?', options: ['Analyserar möjliga felkällor', 'Avslutar hela kursen', 'Byter till en annan skola'], answer: 'Analyserar möjliga felkällor', difficulty: 'hard', topic: 'stem' },
+  { id: 60, title: 'Ett viktigt beslut', text: 'Kommunen vill förbättra kollektivtrafiken. Invånarna får lämna kommentarer innan beslutet fattas, och förslaget behandlas på nästa möte.', question: 'Vad får invånarna göra?', options: ['Lämna kommentarer', 'Bestämma mötesdagen ensamma', 'Avboka alla bussar'], answer: 'Lämna kommentarer', difficulty: 'hard', topic: 'general' },
+);
+
 export type WritingPrompt = { id: number; prompt: string; difficulty: Difficulty; topic: Topic };
 
 export const writingPrompts: WritingPrompt[] = [
@@ -120,6 +146,19 @@ writingPrompts.push(...Array.from({ length: 43 }, (_, index) => {
   const template = writingTemplates[index % writingTemplates.length];
   return { id: 8 + index, prompt: `${template[0]} Tehtävä ${index + 8}.`, difficulty: template[1], topic: template[2] };
 }));
+
+writingPrompts.push(
+  { id: 51, prompt: 'Skriv ett kort meddelande till en vän och berätta när ni kan träffas.', difficulty: 'easy', topic: 'general' },
+  { id: 52, prompt: 'Beskriv din vanliga skoldag med några enkla meningar.', difficulty: 'easy', topic: 'school' },
+  { id: 53, prompt: 'Skriv ett meddelande till en lärare och fråga när uppgiften ska lämnas in.', difficulty: 'easy', topic: 'school' },
+  { id: 54, prompt: 'Skriv en kort instruktion för hur man mäter temperaturen på vatten.', difficulty: 'medium', topic: 'stem' },
+  { id: 55, prompt: 'Berätta varför det är viktigt att sova tillräckligt under skolveckan.', difficulty: 'medium', topic: 'general' },
+  { id: 56, prompt: 'Jämför att åka buss och att cykla till skolan.', difficulty: 'medium', topic: 'general' },
+  { id: 57, prompt: 'Förklara med egna ord hur man räknar ut arean av en rektangel.', difficulty: 'medium', topic: 'stem' },
+  { id: 58, prompt: 'Kirjoita ruotsiksi mielipide siitä, miten koulun ryhmätyöskentelyä voisi kehittää.', difficulty: 'hard', topic: 'school' },
+  { id: 59, prompt: 'Skriv ett argumenterande meddelande om varför elever ska få återkoppling på sina uppgifter.', difficulty: 'hard', topic: 'school' },
+  { id: 60, prompt: 'Beskriv ett experiment där resultatet inte motsvarar hypotesen och diskutera möjliga orsaker.', difficulty: 'hard', topic: 'stem' },
+);
 
 export type SpeakingPrompt = { id: number; prompt: string; keywords: string[]; difficulty: Difficulty; topic: Topic };
 
@@ -160,3 +199,16 @@ speakingPrompts.push(...Array.from({ length: 33 }, (_, index) => {
   const template = speakingTemplates[index % speakingTemplates.length];
   return { id: 18 + index, prompt: `${template[0]} Tehtävä ${index + 18}.`, keywords: [...template[1]], difficulty: template[2], topic: template[3] };
 }));
+
+speakingPrompts.push(
+  { id: 51, prompt: 'Käännä tämä lause ruotsiksi: Minulla on kiire tänään.', keywords: ['har', 'bråttom', 'idag'], difficulty: 'easy', topic: 'general' },
+  { id: 52, prompt: 'Käännä tämä lause ruotsiksi: Koulu alkaa kahdeksalta.', keywords: ['skolan', 'börjar', 'åtta'], difficulty: 'easy', topic: 'school' },
+  { id: 53, prompt: 'Käännä tämä lause ruotsiksi: Tarvitsen apua tämän tehtävän kanssa.', keywords: ['behöver', 'hjälp', 'uppgiften'], difficulty: 'easy', topic: 'school' },
+  { id: 54, prompt: 'Käännä tämä lause ruotsiksi: Bussi on myöhässä kymmenen minuuttia.', keywords: ['bussen', 'försenad', 'tio', 'minuter'], difficulty: 'medium', topic: 'general' },
+  { id: 55, prompt: 'Käännä tämä lause ruotsiksi: Mittaamme lämpötilan joka minuutti.', keywords: ['mäter', 'temperaturen', 'varje', 'minut'], difficulty: 'medium', topic: 'stem' },
+  { id: 56, prompt: 'Käännä tämä lause ruotsiksi: Opettaja jakaa luokan pieniin ryhmiin.', keywords: ['läraren', 'delar', 'klassen', 'grupper'], difficulty: 'medium', topic: 'school' },
+  { id: 57, prompt: 'Käännä tämä lause ruotsiksi: Jos sataa, siirrämme retken torstaille.', keywords: ['regnar', 'flyttar', 'utflykten', 'torsdag'], difficulty: 'medium', topic: 'general' },
+  { id: 58, prompt: 'Käännä tämä lause ruotsiksi: Tulokset osoittavat selkeän eron materiaalien välillä.', keywords: ['resultaten', 'visar', 'skillnad', 'materialen'], difficulty: 'hard', topic: 'stem' },
+  { id: 59, prompt: 'Käännä tämä lause ruotsiksi: Oppilaiden täytyy perustella vastauksensa tekstin avulla.', keywords: ['eleverna', 'måste', 'motivera', 'svar', 'texten'], difficulty: 'hard', topic: 'school' },
+  { id: 60, prompt: 'Käännä tämä lause ruotsiksi: Vaikka hypoteesi oli väärä, kokeesta opittiin paljon.', keywords: ['även', 'hypotesen', 'fel', 'experimentet', 'lärde'], difficulty: 'hard', topic: 'stem' },
+);

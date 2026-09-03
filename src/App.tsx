@@ -15,6 +15,30 @@ function normalize(text: string) {
   return text.trim().toLocaleLowerCase('fi-FI');
 }
 
+function normalizeDictionaryTerm(text: string) {
+  return normalize(text)
+    .replace(/[.,!?;:()[\]{}'"“”]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .replace(/^(en|ett)\s+/, '')
+    .trim();
+}
+
+function exerciseDictionaryTerms(): string[] {
+  const texts = [
+    ...listeningExercises.flatMap((exercise) => [exercise.text, exercise.question, ...exercise.options]),
+    ...readingExercises.flatMap((exercise) => [exercise.title, exercise.text, exercise.question, ...exercise.options]),
+    ...writingPrompts.map((prompt) => prompt.prompt),
+    ...speakingPrompts.flatMap((prompt) => prompt.keywords),
+  ];
+
+  return Array.from(new Set(
+    texts
+      .flatMap((text) => text.split(/\s+/))
+      .map((word) => normalizeDictionaryTerm(word))
+      .filter((word) => word.length > 2 && !/^\d+$/.test(word)),
+  ));
+}
+
 function isToday(date: string) {
   const value = new Date(date);
   const now = new Date();
@@ -320,18 +344,32 @@ export default function App() {
   }
 
   function searchDictionary(queryOverride?: string) {
-    const query = normalize(queryOverride ?? dictionaryQuery);
+    const rawQuery = queryOverride ?? dictionaryQuery;
+    const query = normalizeDictionaryTerm(rawQuery);
     if (!query) {
       setDictionaryResult(null);
       setDictionaryMessage('Kirjoita ensin sana, jonka haluat kääntää.');
       return;
     }
 
-    const result = vocabulary.find((item) => normalize(
+    const result = vocabulary.find((item) => normalizeDictionaryTerm(
       dictionaryDirection === 'fi-sv' ? item.finnish : item.swedish,
     ) === query);
-    setDictionaryResult(result ?? null);
-    setDictionaryMessage(result ? '' : 'Sanaa ei löytynyt tämänhetkisestä sanastosta.');
+    const exerciseTerm = dictionaryDirection === 'sv-fi'
+      ? exerciseDictionaryTerms().find((term) => term === query)
+      : undefined;
+    const fallbackResult = exerciseTerm
+      ? {
+        swedish: exerciseTerm,
+        finnish: 'Käännöstä ei ole vielä lisätty sanastoon',
+        example: 'Sana esiintyy sovelluksen harjoitusmateriaalissa.',
+        category: 'Harjoitusmateriaali',
+        difficulty: 'medium' as Difficulty,
+        topic: 'general' as Topic,
+      }
+      : undefined;
+    setDictionaryResult(result ?? fallbackResult ?? null);
+    setDictionaryMessage(result || fallbackResult ? '' : 'Sanaa ei löytynyt tämänhetkisestä sanastosta.');
   }
 
   function translateDictionaryQuery() {
